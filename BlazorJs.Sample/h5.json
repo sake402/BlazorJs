@@ -1,0 +1,10 @@
+﻿{
+  "cleanOutputFolderBeforeBuild": false,
+  "resources": [
+    {
+      "name": "wwwroot",
+      "files": [ "wwwroot/*" ],
+      "output": "assets/"
+    }
+  ]
+}

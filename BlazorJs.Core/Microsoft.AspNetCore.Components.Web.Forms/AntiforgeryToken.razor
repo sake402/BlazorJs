@@ -1,0 +1,6 @@
+@namespace Microsoft.AspNetCore.Components.Forms
+
+@if (_requestToken != null)
+{
+    <input type="hidden" name="@_requestToken.FormFieldName" value="@_requestToken.Value" />
+}

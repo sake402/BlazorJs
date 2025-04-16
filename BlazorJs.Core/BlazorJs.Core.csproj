@@ -1,0 +1,20 @@
+﻿<Project Sdk="h5.Target/23.2.35852">
+
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<LangVersion>10.0</LangVersion>
+		<ImplicitUsings>disable</ImplicitUsings>
+		<Nullable>disable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\h5\H5\H5.Core\H5.Core.csproj" />
+	  <ProjectReference Include="..\..\h5\H5\H5\H5.csproj" />
+	</ItemGroup>
+
+	<!--<ItemGroup>
+		<PackageReference Include="h5" Version="22.11.34330" />
+		<PackageReference Include="h5.core" Version="22.11.34329" />
+	</ItemGroup>-->
+	
+</Project>

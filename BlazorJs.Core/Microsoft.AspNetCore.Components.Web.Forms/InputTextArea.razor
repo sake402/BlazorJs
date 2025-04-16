@@ -1,0 +1,9 @@
+@namespace Microsoft.AspNetCore.Components.Forms
+@using System.Collections.Generic
+@inherits InputBase<string>
+
+<textarea @attributes="@(this.As<IReadOnlyDictionary<string, object>>())"
+       name="@NameAttributeValue"
+       class="@CssClass"
+       @bind-value="@CurrentValueAsString"
+       @ref="Element" />
