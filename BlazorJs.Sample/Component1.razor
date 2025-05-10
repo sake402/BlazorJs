@@ -8,7 +8,8 @@
     @field2 DEF
 </a>
 
-<GenericComponent1 T1="int" T2="string"></GenericComponent1>
+<div @attributes="this.As<Dictionary<string, object>>()"></div>
+<GenericComponent1 T1="int" T2="string" @attributes="this.As<Dictionary<string, object>>()"></GenericComponent1>
 
 <CascadingValue TValue="Component1" Name="C1" Value="this" IsFixed="true">
     <Component2 Property1="1" Property2="1" Context="a">

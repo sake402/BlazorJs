@@ -117,6 +117,38 @@ namespace Microsoft.AspNetCore.Components
             DisposeOnDispose(State.SubscribeCascadingValue<T>((o, e) => action(e), cascadingParameterName));
         }
 
+        public void Set(string key, object value)
+        {
+            if (key == "@attributes")
+            {
+                if (value is IReadOnlyDictionary<string, object> dic)
+                {
+                    foreach (var kv in dic)
+                    {
+                        this.SetValue(kv.Key, kv.Value);
+                    }
+                }
+                else
+                {
+                    foreach (var mkey in object.GetOwnPropertyNames(value))
+                    {
+                        if (mkey.Length > 0 && char.IsLower(mkey[0]))
+                        {
+                            var val = value[mkey];
+                            this.SetValue(mkey, val);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if (key.Length > 0 && char.IsLower(key[0]))
+                {
+                    this.SetValue(key, value);
+                }
+            }
+        }
+
         public event EventHandler OnDisposed;
         protected void DisposeOnDispose(IDisposable disposable)
         {

@@ -12,7 +12,7 @@ namespace BlazorJs.Sample
         int field2;
         RenderFragment view;
         public string Property1 { get; set; }
-        public int Property2 { get; set; }
+        public int Property2 { get; set; } 
         public RenderFragment<string> ChildContent { get; set; }
         public RenderFragment Property3 { get; set; }
         public RenderFragment<int> Property4 { get; set; }

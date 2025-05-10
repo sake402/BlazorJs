@@ -9,7 +9,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.Rendering;
-using WebUISharp.Core;
+using BlazorJs.Core;
 using static H5.Core.dom;
 
 namespace Microsoft.AspNetCore.Components.Web.Virtualization

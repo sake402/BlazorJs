@@ -33,4 +33,8 @@
 	<ItemGroup>
 		<ProjectReference Include="..\BlazorJs.Core\BlazorJs.Core.csproj" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="__BlazorJs\" />
+	</ItemGroup>
 </Project>

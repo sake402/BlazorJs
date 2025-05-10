@@ -5,6 +5,20 @@
 		<LangVersion>10.0</LangVersion>
 		<ImplicitUsings>disable</ImplicitUsings>
 		<Nullable>disable</Nullable>
+
+		<PackageOutputPath>./nupkg</PackageOutputPath>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageId>BlazorJs.Compiler</PackageId>
+		<PackageVersion>1.0.0</PackageVersion>
+		<PackageProjectUrl>https://github.com/sake402/BlazorJs</PackageProjectUrl>
+		<PackageTags>blazor,javascript</PackageTags>
+		<Authors>Samson Ojetade</Authors>
+		<Description>
+			Come! Let's compile blazor down to Javascript.
+			We love C# and Blazor. But its runtime is slow in browser.
+
+			Why not embrace that Javascript, one more time!
+		</Description>
 	</PropertyGroup>
 
 	<ItemGroup>

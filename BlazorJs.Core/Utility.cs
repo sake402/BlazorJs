@@ -85,6 +85,16 @@ namespace BlazorJs.Core
             obj = null;
             return false;
         }
+        
+        public static void SetValue(this object container, string propertyName, object obj)
+        {
+            container[propertyName.ToString()] = obj;
+        }
+
+        public static void SetValue(this object container, int propertyName, object obj)
+        {
+            container[propertyName.ToString()] = obj;
+        }
 
         public static void Remove(this object container, int propertyName)
         {
