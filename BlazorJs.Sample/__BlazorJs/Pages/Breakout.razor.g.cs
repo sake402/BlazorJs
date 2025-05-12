@@ -2,17 +2,17 @@ using System;
 using static H5.Core.dom;
 using BlazorJs.Core;
 using Microsoft.AspNetCore.Components;
+using BlazorJs.Core.Components;
+using BlazorJs.Sample.Layout;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using BlazorJs.Core.Components;
-using BlazorJs.Sample.Layout;
 using BlazorJs.Core.Components.LiteRouting;
 
 
 namespace BlazorJs.Sample.Pages
 {
-    public partial class Breakout : ComponentBase
+    public partial class Breakout : Microsoft.AspNetCore.Components.ComponentBase
     {
         public static void RegisterRoute()
         {
@@ -26,7 +26,7 @@ namespace BlazorJs.Sample.Pages
             {
                 __attribute.Set("width", "480");
                 __attribute.Set("height", "320");
-            }, null, sequenceNumber: -2057884306);
+            }, null, sequenceNumber: 18854013);
         }
 
     }

@@ -37,6 +37,11 @@ namespace BlazorJs.Core
         public const int Virtualize_PlaceholderAfter_SequenceNumber = 19;
         public const int Virtualize_SpacerElementAfter_SequenceNumber = 20;
 
+        
+        public const int ErrorBoundary_ChildContent_SequenceNumber = 21;
+        public const int ErrorBoundary_ErrorContent_SequenceNumber = 22;
+        public const int ErrorBoundary_DefaultContent_SequenceNumber = 23;
+
         public static void FireAndForget(this Task task)
         {
             task.ContinueWith(t =>
@@ -61,14 +66,14 @@ namespace BlazorJs.Core
 
         public static bool ContainsKey(this object container, string propertyName)
         {
-            return container.HasOwnProperty(propertyName);
+            return container.HasOwnProperty(propertyName.As<object>());
         }
 
         public static bool TryGetValue(this object container, string propertyName, out object obj)
         {
-            if (container.HasOwnProperty(propertyName))
+            if (container.HasOwnProperty(propertyName.As<object>()))
             {
-                obj = container[propertyName];
+                obj = container[propertyName.As<string>()];
                 return true;
             }
             obj = null;
@@ -77,9 +82,9 @@ namespace BlazorJs.Core
 
         public static bool TryGetValue(this object container, int propertyName, out object obj)
         {
-            if (container.HasOwnProperty(propertyName))
+            if (container.HasOwnProperty(propertyName.As<object>()))
             {
-                obj = container[propertyName.ToString()];
+                obj = container[propertyName.As<string>()];
                 return true;
             }
             obj = null;
@@ -88,17 +93,17 @@ namespace BlazorJs.Core
         
         public static void SetValue(this object container, string propertyName, object obj)
         {
-            container[propertyName.ToString()] = obj;
+            container[propertyName] = obj;
         }
 
         public static void SetValue(this object container, int propertyName, object obj)
         {
-            container[propertyName.ToString()] = obj;
+            container[propertyName.As<string>()] = obj;
         }
 
         public static void Remove(this object container, int propertyName)
         {
-            H5.Script.Delete(container, propertyName.ToString());
+            H5.Script.Delete(container, propertyName.As<string>());
             //container[propertyName.ToString()] = null;
         }
     }

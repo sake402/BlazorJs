@@ -11,6 +11,6 @@ namespace BlazorJs.Core
     public partial interface IUIContent : IDisposable
     {
         UIFrameState State { get; }
-        void Build(object key = null);
+        //void Build(object key = null);
     }
 }

@@ -25,7 +25,7 @@ namespace BlazorJs.Core
             }
         }
 
-        public UIFrameState State => this;
+        //public UIFrameState State => this;
 
         internal UIText(IRenderer platformRenderer, IUIFrame parent, int id, object key) : base(platformRenderer, parent, id, key)
         {

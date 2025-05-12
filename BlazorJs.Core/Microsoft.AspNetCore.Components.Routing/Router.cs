@@ -180,7 +180,7 @@ namespace Microsoft.AspNetCore.Components.Routing
 
         protected internal override void BuildRenderTree(IUIFrame frame, object key = null)
         { 
-            frame.Content(_viewFragment, sequenceNumber: Utility.Router_View_SequenceNumber + seedSequence);
+            frame.Content(_viewFragment, sequenceNumber: Utility.Router_View_SequenceNumber/* + seedSequence*/);
         }
 
         void Render(RenderFragment fragment)

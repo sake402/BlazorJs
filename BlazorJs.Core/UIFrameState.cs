@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using static H5.Core.dom;
 using H5;
+using Microsoft.AspNetCore.Components;
 
 namespace BlazorJs.Core
 {
@@ -11,20 +12,23 @@ namespace BlazorJs.Core
         public Dictionary<object, IUIContent> Members { get; } = new Dictionary<object, IUIContent>();
     }
 
-    public partial class UIFrameState : IDisposable
+    public partial class UIFrameState : IDisposable,
+        IUIFrame// used by component
     {
         //Dictionary<string, object> contents;
         object contents = null;
-        IRenderer renderer;
+        internal IRenderer Renderer { get; }
         IUIFrame parentFrame;
         int id;
         object key;
+        internal Type ComponentType { get; set; }
+        internal IComponent Component { get; set; }
         internal Node.Interface[] Elements { get; set; }
         internal int TrackedId { get; set; }
 
         internal UIFrameState(IRenderer renderer, IUIFrame parent, int id, object key)
         {
-            this.renderer = renderer;
+            Renderer = renderer;
             this.parentFrame = parent;
             this.id = id;
             this.key = key;
@@ -34,18 +38,18 @@ namespace BlazorJs.Core
         internal object Key => key;
         internal IUIFrame ParentFrame => parentFrame;
         internal IEnumerable<IUIContent> Children => contents == null ? null : object.GetOwnPropertyNames(contents)
-            .Select(pn => contents[pn])
-            .SelectMany<object, IUIContent>(o =>
+            .SelectMany<string, IUIContent>(pn =>
             {
+                var o = contents[pn];
                 if (o is UIKeyedGroup g)
                 {
                     return g.Members.Values;
                 }
                 return new[] { (IUIContent)o };
             })
-            .Cast<IUIContent>()
             .OrderBy(o => o.State?.id ?? 0) ?? Enumerable.Empty<IUIContent>();
-        internal IRenderer Renderer => renderer;
+
+        public UIFrameState State => this;
 
         int trackingChildrenId = -1;
 
@@ -204,6 +208,10 @@ namespace BlazorJs.Core
 
         public virtual void Dispose()
         {
+            if (Component is IDisposable disposable)
+            {
+                disposable.Dispose();
+            }
             if (Children != null)
             {
                 foreach (var child in Children)
@@ -212,6 +220,14 @@ namespace BlazorJs.Core
                 }
             }
             contents = null;
+            ParentFrame.State.Remove(this);
+            ((BrowserNativeRenderer)Renderer).Remove(id);
         }
+
+        //public void Build(object key = null)
+        //{
+        //    //((BrowserNativeRenderer)Renderer).AddToRenderQueue(id);
+        //    throw new NotImplementedException();
+        //}
     }
 }

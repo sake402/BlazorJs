@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Components;
 using System;
+using Microsoft.AspNetCore.Components.RenderTree;
 
 namespace BlazorJs.Core
 {
-    internal partial class BrowserNativeRenderer : IRenderer
+    internal partial class BrowserNativeRenderer : Renderer, IRenderer
     {
         //class RegistryEntry
         //{
@@ -15,15 +16,26 @@ namespace BlazorJs.Core
 
         UIFrame rootFragment;
         object registries = new object();
-
-        internal BrowserNativeRenderer(IServiceProvider services)
+        Dispatcher _dispatcher;
+        internal BrowserNativeRenderer(IServiceProvider services, IComponentActivator componentActivator)
         {
             Services = services;
             rootFragment = new UIFrame(this);
             rootFragment.Elements = new[] { document.body };
+            ComponentActivator = componentActivator;
         }
 
         public IServiceProvider Services { get; }
+        public IComponentActivator ComponentActivator { get; }
+        public override Dispatcher Dispatcher
+        {
+            get
+            {
+                if (_dispatcher == null)
+                    _dispatcher = Dispatcher.CreateDefault();
+                return _dispatcher;
+            }
+        }
 
         public void Add(RenderFragment fragment)
         {
@@ -148,9 +160,9 @@ namespace BlazorJs.Core
                             return first;
                     }
                 }
-                if (after is ComponentBase component && component.State.Children != null)
+                if (after.State.Component != null && after.State.Children != null)
                 {
-                    foreach (var c in component.State.Children)
+                    foreach (var c in after.State.Children)
                     {
                         var first = GetFirstElementAfter(c);
                         if (first != null)
@@ -312,7 +324,12 @@ namespace BlazorJs.Core
             var insertBefore = markup.GetAfter();
             var template = (HTMLTemplateElement)document.createElement("template");
             template.innerHTML = markup.Markup;
-            markup.Elements = template.content.childNodes.As<Node.Interface[]>();
+            //make sure to clone the NodeList as insert into parent will remove it from the list
+            var nodes = template.content.childNodes.As<Node.Interface[]>();
+            var elements = new Node.Interface[nodes.Length];
+            int i = 0;
+            nodes.ForEach((n) => elements[i++] = n);
+            markup.Elements = elements;
             Insert(markup, markup.State.ParentFrame, insertBefore);
         }
 
@@ -325,7 +342,7 @@ namespace BlazorJs.Core
         public void RemoveMarkup(UIMarkup markup)
         {
             var parent = GetParentElement(markup);
-            markup.State.Elements.ForEach(el =>
+            markup.Elements.ForEach(el =>
             {
                 parent.removeChild(el);
             });
@@ -333,6 +350,100 @@ namespace BlazorJs.Core
 
         public void Flush()
         {
+        }
+
+        internal void Register(int frameId, UIFrameState state)
+        {
+            registries.SetValue(frameId, state);
+        }
+
+        internal void Remove(int frameId)
+        {
+            registries.Remove(frameId);
+        }
+
+        internal UIFrameState GetState(int frameId)
+        {
+            if (registries.TryGetValue(frameId, out var state))
+            {
+                var mstate = (UIFrameState)state;
+                return mstate;
+            }
+            return null;
+        }
+
+        internal UIFrameState GetRequiredState(int frameId)
+        {
+            return GetState(frameId) ?? throw new InvalidOperationException($"Component with id {frameId} not found");
+        }
+
+        internal override void AddToRenderQueue(int componentId, RenderFragment renderFragment)
+        {
+            var mstate = GetRequiredState(componentId);
+            mstate.TrackContents(() =>
+            {
+                renderFragment(mstate);
+            });
+            var scope = ((object)renderFragment)["$scope"];
+            if (scope is IHandleAfterRender haf)
+            {
+                haf.OnAfterRenderAsync().FireAndForget();
+            }
+        }
+
+        internal override void HandleComponentException(Exception exception, int componentId)
+        {
+            HandleExceptionViaErrorBoundary(exception, GetRequiredState(componentId));
+        }
+
+        /// <summary>
+        /// If the exception can be routed to an error boundary around <paramref name="errorSourceOrNull"/>, do so.
+        /// Otherwise handle it as fatal.
+        /// </summary>
+        private void HandleExceptionViaErrorBoundary(Exception error, UIFrameState errorSourceOrNull)
+        {
+            // We only get here in specific situations. Currently, all of them are when we're
+            // already on the sync context (and if not, we have a bug we want to know about).
+            Dispatcher.AssertAccess();
+
+            // We don't allow NavigationException instances to be caught by error boundaries.
+            // These are special exceptions whose purpose is to be as invisible as possible to
+            // user code and bubble all the way up to get handled by the framework as a redirect.
+            if (error is NavigationException)
+            {
+                HandleException(error);
+                return;
+            }
+
+            // Find the closest error boundary, if any
+            var candidate = errorSourceOrNull;
+            while (candidate != null)
+            {
+                if (candidate.Component is IErrorBoundary errorBoundary)
+                {
+                    // Don't just trust the error boundary to dispose its subtree - force it to do so by
+                    // making it render an empty fragment. Ensures that failed components don't continue to
+                    // operate, which would be a whole new kind of edge case to support forever.
+                    AddToRenderQueue(candidate.Id, (_, __) => { });
+
+                    try
+                    {
+                        errorBoundary.HandleException(error);
+                    }
+                    catch (Exception errorBoundaryException)
+                    {
+                        // If *notifying* about an exception fails, it's OK for that to be fatal
+                        HandleException(errorBoundaryException);
+                    }
+
+                    return; // Handled successfully
+                }
+
+                candidate = candidate.ParentFrame.State;
+            }
+
+            // It's unhandled, so treat as fatal
+            HandleException(error);
         }
     }
 }

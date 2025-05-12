@@ -16,7 +16,7 @@
                 }
             }
         }
-        public UIFrameState State => this;
+        //public UIFrameState State => this;
 
         internal UIMarkup(
             IRenderer platformRenderer,
@@ -42,7 +42,6 @@
         {
             base.Dispose();
             Renderer.RemoveMarkup(/*ref */this);
-            ParentFrame.State.Remove(this);
         }
 
         public override string ToString()

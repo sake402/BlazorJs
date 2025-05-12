@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BlazorJs.Compiler.Razor
 {
-    public class RazorComponentParser
+    public partial class RazorComponentParser
     {
         string razorCode;
         int position;
@@ -388,6 +388,131 @@ namespace BlazorJs.Compiler.Razor
             }
             throw new InvalidOperationException("Expected @*");
         }
+        //<br />
+        //<p></p>
+        int FindHtmlEnd(int start)
+        {
+            if (At(start) == '<')
+            {
+                int stateStartIndex = 0;
+                ReadOnlySpan<char> currentTag = ReadOnlySpan<char>.Empty;
+                HtmlParseState state = HtmlParseState.StartOpenend;
+                int where = start + 1;
+                bool IsInCode() => state.HasFlag(HtmlParseState.Code);
+                HtmlParseState StateNoFlags() => state & ~HtmlParseState.Flags;
+                bool IsInAttributeValue() => StateNoFlags() == HtmlParseState.AttributeValue;
+                while (true)
+                {
+                    char c = At(where);
+                    if (c == '\0')
+                        throw new InvalidOperationException("Malformed html");
+                    if (c == '/' && At(where + 1) == '>')
+                    {
+                        return where + 1;
+                    }
+                    else if ((StateNoFlags() == HtmlParseState.StartOpenend ||
+                        StateNoFlags() == HtmlParseState.TagName ||
+                        StateNoFlags() == HtmlParseState.TagNamed ||
+                        StateNoFlags() == HtmlParseState.AttributeKey ||
+                        StateNoFlags() == HtmlParseState.AttributeKeyed ||
+                        StateNoFlags() == HtmlParseState.AttributeValue ||
+                        StateNoFlags() == HtmlParseState.AttributeValued) && c == '>')
+                    {
+                        if (StateNoFlags() == HtmlParseState.TagName || StateNoFlags() == HtmlParseState.TagNamed)
+                        {
+                            currentTag = Window(stateStartIndex, where - 1);
+                        }
+                        if (IsSelfClosingTag(currentTag))
+                            return where;
+                        stateStartIndex = where;
+                        state = HtmlParseState.StartClosed;
+                    }
+                    else if (StateNoFlags() == HtmlParseState.StartClosed && c == '@' && IsCodeBlockStart(where, null, null, out var codeBlockStart, out var codeBlockEnd))
+                    {
+                        where = codeBlockEnd;
+                    }
+                    else if (StateNoFlags() == HtmlParseState.StartClosed && c == '<' && At(where + 1) == '/')
+                    {
+                        stateStartIndex = where;
+                        state = HtmlParseState.EndOpened;
+                        where++;
+                    }
+                    else if (StateNoFlags() == HtmlParseState.EndOpened && c == '>')
+                    {
+                        return where;
+                    }
+                    else if (!IsInCode() && !IsInAttributeValue() && c == '<')
+                    {
+                        where = FindHtmlEnd(where);
+                        if (where < 0)
+                            throw new InvalidOperationException("Malformed html");
+                    }
+                    else if (StateNoFlags() == HtmlParseState.StartOpenend && c != ' ')
+                    {
+                        stateStartIndex = where;
+                        state = HtmlParseState.TagName;
+                    }
+                    else if (StateNoFlags() == HtmlParseState.TagName && c == ' ')
+                    {
+                        currentTag = Window(stateStartIndex, where - 1);
+                        stateStartIndex = where;
+                        state = HtmlParseState.TagNamed;
+                    }
+                    else if ((StateNoFlags() == HtmlParseState.TagNamed || StateNoFlags() == HtmlParseState.AttributeValued) && c != ' ')
+                    {
+                        stateStartIndex = where;
+                        if (c == '@')
+                        {
+                            state = HtmlParseState.AttributeKey | HtmlParseState.Code;
+                        }
+                        else
+                        {
+                            state = HtmlParseState.AttributeKey;
+                        }
+                    }
+                    else if (StateNoFlags() == HtmlParseState.AttributeKey && c == '=')
+                    {
+                        stateStartIndex = where;
+                        var flag = state & HtmlParseState.Flags;
+                        state = HtmlParseState.AttributeKeyed | flag;
+                    }
+                    else if (StateNoFlags() == HtmlParseState.AttributeKeyed && (c == '"' || c != ' '))
+                    {
+                        stateStartIndex = where;
+                        var flag = state & HtmlParseState.Flags;
+                        if (c == '@')
+                        {
+                            state = HtmlParseState.AttributeValue | HtmlParseState.Code | flag;
+                            where++;
+                        }
+                        else if (c == '"')
+                        {
+                            if (At(where + 1) == '@')
+                            {
+                                state = HtmlParseState.AttributeValue | HtmlParseState.Code | HtmlParseState.Quoted | flag;
+                                where++;
+                            }
+                            else
+                            {
+                                state = HtmlParseState.AttributeValue | HtmlParseState.Quoted | flag;
+                            }
+                        }
+                        else
+                        {
+                            state = HtmlParseState.AttributeValue | flag;
+                        }
+                    }
+                    else if (StateNoFlags() == HtmlParseState.AttributeValue && ((state.HasFlag(HtmlParseState.Quoted) && c == '"') || (!state.HasFlag(HtmlParseState.Quoted) && c == ' ')))
+                    {
+                        stateStartIndex = where;
+                        var flag = state & HtmlParseState.Flags;
+                        state = HtmlParseState.AttributeValued | flag;
+                    }
+                    where++;
+                }
+            }
+            throw new InvalidOperationException("Expected @*");
+        }
 
         ReadOnlySpan<char> Window(int start, int end)
         {
@@ -398,6 +523,17 @@ namespace BlazorJs.Compiler.Razor
                 throw new InvalidOperationException("Invalid range");
             }
             return razorCode.AsSpan(start, end - start + 1);
+        }
+
+        ReadOnlyMemory<char> WindowAsMemory(int start, int end)
+        {
+            if (end == start - 1)
+                return ReadOnlyMemory<char>.Empty;
+            if (end < start)
+            {
+                throw new InvalidOperationException("Invalid range");
+            }
+            return razorCode.AsMemory(start, end - start + 1);
         }
 
         public int SkipRazorComment(int start)
@@ -574,15 +710,27 @@ namespace BlazorJs.Compiler.Razor
 
         static string[] SelfClosingTags = new string[] { "input", "br" };
 
+        bool IsSelfClosingTag(ReadOnlySpan<char> tag)
+        {
+            tag = tag.Trim();
+            foreach (var t in SelfClosingTags)
+                if (tag.SequenceEqual(t))
+                    return true;
+            return false;
+        }
+
         IEnumerable<RazorXmlElementNode> ParseElementNodes(RazorXmlNode? outerParentNode)
         {
             List<RazorXmlElementNode> nodes = new List<RazorXmlElementNode>();
             position = SkipWhiteSpaceAndComments(position);
             while (IsStartingElementNode)
             {
+                int startHtml = position;
+                var endHtml = FindHtmlEnd(position);
+                var rawHtml = WindowAsMemory(startHtml, endHtml);
                 position++;
                 var tagName = GetWord();
-                var node = new RazorXmlElementNode(tagName.ToString(), outerParentNode);
+                var node = new RazorXmlElementNode(tagName.ToString(), rawHtml, outerParentNode);
                 nodes.Add(node);
                 position = SkipWhiteSpaceAndComments(position);
                 while (Current != '>' && Current != '/')
@@ -741,8 +889,10 @@ namespace BlazorJs.Compiler.Razor
                         else if (statementStarted && c == '@' && At(where + 1) == '<'/* && CompareAt(where, "@<text>") */&& (CompareAt(start, "RenderFragment") || CompareAt(start, "return"))) //handle RenderFragment view = @<whatever/>; and return @<text>
                         {
                             //CollectStatement();
+                            var endHtml = FindHtmlEnd(where + 1);
+                            var rawHtml = WindowAsMemory(where + 1, endHtml);
                             position = where + 1;
-                            var renderFragment = new RazorCSharpRenderFragmentStatement(Window(start, where - 1).ToString(), block);
+                            var renderFragment = new RazorCSharpRenderFragmentStatement(Window(start, where - 1).ToString(), rawHtml, block);
                             block.Children.Add(renderFragment);
                             IEnumerable<RazorXmlNode> nodes = ParseElementNodes(renderFragment);
                             position = SkipWhiteSpaceAndComments(position);

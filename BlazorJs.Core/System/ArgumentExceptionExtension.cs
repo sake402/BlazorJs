@@ -7,5 +7,11 @@
             if (string.IsNullOrEmpty(o))
                 throw new NullReferenceException();
         }
+
+        public static void ThrowIfNullOrWhiteSpace(string o)
+        {
+            if (string.IsNullOrWhiteSpace(o))
+                throw new NullReferenceException();
+        }
     }
 }

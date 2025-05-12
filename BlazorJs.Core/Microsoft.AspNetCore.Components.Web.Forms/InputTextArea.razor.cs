@@ -3,7 +3,6 @@
 
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Components.Rendering;
-using static H5.Core.dom;
 
 namespace Microsoft.AspNetCore.Components.Forms
 {
@@ -27,7 +26,7 @@ namespace Microsoft.AspNetCore.Components.Forms
         /// May be <see langword="null"/> if accessed before the component is rendered.
         /// </para>
         /// </summary>
-        public HTMLElement Element { get; protected set; }
+        public ElementReference Element { get; protected set; }
 
         ///// <inheritdoc />
         //protected override void BuildRenderTree(RenderTreeBuilder builder)

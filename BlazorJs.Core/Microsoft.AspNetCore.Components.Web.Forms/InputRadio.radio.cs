@@ -43,7 +43,7 @@ namespace Microsoft.AspNetCore.Components.Forms
         /// May be <see langword="null"/> if accessed before the component is rendered.
         /// </para>
         /// </summary>
-        public HTMLElement Element { get; protected set; }
+        public ElementReference Element { get; protected set; }
 
         [CascadingParameter] private InputRadioContext CascadedContext { get; set; }
 

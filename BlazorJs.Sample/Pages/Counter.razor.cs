@@ -6,13 +6,13 @@ namespace BlazorJs.Sample.Pages
 {
     public partial class Counter
     {
-        object? a = null;
+        object a = null;
         private int currentCount = 0;
         dynamic ab;
         private void IncrementCount()
         {
-            ab = currentCount;
-            ab.ToString(ab);
+            //ab = currentCount;
+            //ab.ToString();
             currentCount += 1;
         }
         private void DecrementCount()

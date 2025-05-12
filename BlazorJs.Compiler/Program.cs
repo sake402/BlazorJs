@@ -135,25 +135,26 @@ void TryProcessProject(BlazorJs.Compiler.ProjectInfo project)
     }
 }
 
+const string GeneratedFolderName = "__BlazorJs";
 
 void ProcessProject(BlazorJs.Compiler.ProjectInfo project)
 {
     var projectFolder = Path.GetDirectoryName(project.Path)!;
     Console.WriteLine($"\r\nProcessing in {projectFolder}...");
-    var outputPath = Path.Combine(projectFolder, "__BlazorJs");
+    var outputPath = Path.Combine(projectFolder, GeneratedFolderName);
     if (!Directory.Exists(outputPath))
         Directory.CreateDirectory(outputPath);
     //var projectInfo = ProjectInfo.GetProjectDefinition(projectFolder);
     var razorFiles = Directory.EnumerateFiles(projectFolder, "*.razor", SearchOption.AllDirectories)
         .Where(f => Path.GetFileName(f) != "_Imports.razor");
 
-    var csFiles = Directory.EnumerateFiles(projectFolder, "*.cs", SearchOption.AllDirectories).Where(f => !f.EndsWith(".g.cs")).ToList();
+    var csFiles = Directory.EnumerateFiles(projectFolder, "*.cs", SearchOption.AllDirectories).Where(f => !f.Contains(GeneratedFolderName)).ToList();
     Console.WriteLine($"Compiling {csFiles.Count} files...");
-    var compilation = compiler.GenerateCode(csFiles.ToArray());
+    var compilation = compiler.GenerateCode(project, csFiles.ToArray());
 
     Dictionary<string, ComponentCodeGenerationContext> components = new Dictionary<string, ComponentCodeGenerationContext>();
 
-    List<string> startupCodes = new List<string>();
+    List<string> outStartupCodes = new List<string>();
 
     var referencedAssemblySymbols = compilation.ExternalReferences.Select(r => (IAssemblySymbol?)compilation.GetAssemblyOrModuleSymbol(r));
 
@@ -199,7 +200,7 @@ void ProcessProject(BlazorJs.Compiler.ProjectInfo project)
                 //if (ts.ContainingAssembly.Name==projectInfo.AssemblyName)
                 //continue;
                 var componentClassName = ts.Name;
-                var context = new ComponentCodeGenerationContext(startupCodes)
+                var context = new ComponentCodeGenerationContext(outStartupCodes)
                 {
                     Project = project,
                     //GlobalUsing = imports,
@@ -241,16 +242,22 @@ void ProcessProject(BlazorJs.Compiler.ProjectInfo project)
 
         var razorFolder = Path.GetDirectoryName(razorFile)!;
         var relativePath = Path.GetRelativePath(projectFolder, razorFolder);
-        IEnumerable<string>? imports = null;
-        if (File.Exists(projectFolder + "/_Imports.razor"))
+        string? GetRazorImports(string directory)
         {
-            var im = File.ReadAllText(projectFolder + "/_Imports.razor");
-            imports = im.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).Select(s => s.TrimStart('@')).ToList();
+            if (File.Exists(directory + "/_Imports.razor"))
+            {
+                return File.ReadAllText(directory + "/_Imports.razor");
+            }
+            if (directory == projectFolder)
+                return null;
+            var upperDirectory = Path.GetFullPath(directory + "/..");
+            return GetRazorImports(upperDirectory);
         }
-        var context = new ComponentCodeGenerationContext(startupCodes)
+        var imports = GetRazorImports(razorFolder);
+        var context = new ComponentCodeGenerationContext(outStartupCodes)
         {
             Project = project,
-            GlobalUsing = imports,
+            RazorImports = imports,
             RazorFile = razorFile,
             CsFile = csFilePath,
             Namespace = project.Namespace + (relativePath != "." ? ("." + relativePath.Replace("/", ".").Replace("\\", ".")) : ""),
@@ -284,7 +291,7 @@ void ProcessProject(BlazorJs.Compiler.ProjectInfo project)
         var csFolder = Path.GetDirectoryName(csComponent.FilePath);
         var relativePath = Path.GetRelativePath(projectFolder, csComponent.FilePath);
 
-        var context = new ComponentCodeGenerationContext(startupCodes)
+        var context = new ComponentCodeGenerationContext(outStartupCodes)
         {
             Project = project,
             CsFile = csComponent.FilePath,
@@ -304,7 +311,7 @@ void ProcessProject(BlazorJs.Compiler.ProjectInfo project)
     {
         if (component.Value.RazorFile != null)
         {
-            var parser = new RazorComponentParser(File.ReadAllText(component.Value.RazorFile!));
+            var parser = new RazorComponentParser(component.Value.RazorImports + "\r\n" + File.ReadAllText(component.Value.RazorFile!));
             var parseResult = parser.Parse();
             component.Value.RazorComponentSymbol = parseResult;
         }
@@ -317,7 +324,7 @@ void ProcessProject(BlazorJs.Compiler.ProjectInfo project)
         File.WriteAllText(csFileName, code);
     }
 
-    if (startupCodes.Any())
+    if (outStartupCodes.Any())
     {
         File.WriteAllText(Path.Combine(outputPath, "__Startup.g.cs"), @$"
 namespace {project.Namespace}
@@ -326,7 +333,7 @@ namespace {project.Namespace}
     {{
         public static void Run()
         {{
-{string.Join("\r\n", startupCodes.Select(r => "            " + r))}
+{string.Join("\r\n", outStartupCodes.Select(r => "            " + r))}
         }}
     }}
 }}

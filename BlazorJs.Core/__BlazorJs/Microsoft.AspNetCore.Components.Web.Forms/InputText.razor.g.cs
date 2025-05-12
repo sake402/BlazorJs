@@ -22,7 +22,7 @@ namespace Microsoft.AspNetCore.Components.Forms
                 var bindGetValue1 = @CurrentValueAsString;
                 __attribute.Set("value", bindGetValue1);
                 __attribute.Set("@onchange", EventCallback.Factory.CreateBinder(this, __value => @CurrentValueAsString = __value, bindGetValue1));
-            }, null, sequenceNumber: -1412323700);
+            }, null, sequenceNumber: -1953795527);
         }
 
     }

@@ -28,16 +28,16 @@ namespace Microsoft.AspNetCore.Components.Forms
                 __attribute.Set("data-enhance", (Enhance?"":null));
                 __attribute.Set("@attributes", (this.As<IReadOnlyDictionary<string, object>>()));
                 __attribute.Set("@onsubmit", EventCallback.Factory.Create(this, _handleSubmitDelegate));
-            }, null, key: _editContext.GetHashCode(), sequenceNumber: -89499266);
+            }, null, key: _editContext.GetHashCode(), sequenceNumber: 1847450361);
             __frame0.Component<CascadingValue<EditContext>>((__component0) =>
             {
                 __component0.IsFixed = true;
                 __component0.Value = _editContext;
                 __component0.ChildContent = (__frame1, __key1) =>
                 {
-                    __frame1.Content(ChildContent?.Invoke(_editContext), key: __key1, sequenceNumber: -89499265);
+                    __frame1.Content(ChildContent?.Invoke(_editContext), key: __key1, sequenceNumber: 1847450362);
                 };
-            }, sequenceNumber: -89499264);
+            }, sequenceNumber: 1847450363);
         }
 
     }

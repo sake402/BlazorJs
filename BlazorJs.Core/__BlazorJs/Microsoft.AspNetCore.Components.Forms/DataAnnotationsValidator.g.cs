@@ -10,7 +10,7 @@ namespace Microsoft.AspNetCore.Components.Forms
     {
         protected internal override void InjectServices(IServiceProvider provider)
         {
-            ServiceProvider = provider.GetRequiredService<IServiceProvider>();
+            ServiceProvider = provider.GetRequiredService<System.IServiceProvider>();
 
         }
 

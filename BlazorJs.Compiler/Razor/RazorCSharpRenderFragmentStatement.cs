@@ -8,9 +8,9 @@ namespace BlazorJs.Compiler.Razor
 {
     public class RazorCSharpRenderFragmentStatement : RazorXmlElementNode
     {
-        public RazorCSharpRenderFragmentStatement(string lhs, RazorXmlNode? parent) : base("text", parent)
+        public RazorCSharpRenderFragmentStatement(string lhs, ReadOnlyMemory<char> rawHtml, RazorXmlNode? parent) : base("text", rawHtml, parent)
         {
-            this.LHS = lhs;
+            LHS = lhs;
         }
 
         public string LHS { get; }

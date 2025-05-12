@@ -11,7 +11,7 @@ namespace Microsoft.AspNetCore.Components.Forms
     {
         protected internal override void InjectServices(IServiceProvider provider)
         {
-            Services = provider.GetRequiredService<IServiceProvider>();
+            Services = provider.GetRequiredService<System.IServiceProvider>();
 
         }
 
@@ -25,7 +25,7 @@ namespace Microsoft.AspNetCore.Components.Forms
                     __attribute.Set("type", "hidden");
                     __attribute.Set("name", _requestToken.FormFieldName);
                     __attribute.Set("value", _requestToken.Value);
-                }, null, sequenceNumber: -1205745214);
+                }, null, sequenceNumber: -2103457863);
             }
         }
 

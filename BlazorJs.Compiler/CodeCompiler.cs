@@ -1,16 +1,11 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.Text;
 using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.DependencyModel.Resolution;
-using System;
+using NuGet.ProjectModel;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Runtime.Versioning;
-using System.Text;
 
 namespace BlazorJs.Compiler
 {
@@ -250,37 +245,90 @@ namespace BlazorJs.Compiler
             return GetAssemblies(sourceCodes).SelectMany(ass => GetReferences(ass)).ToArray();
         }
 
-        public byte[]? Compile(params string[] sourceCodes)
+        MetadataReference[] GetReferencesForProject(ProjectInfo project)
         {
-            //Console.WriteLine($"Starting compilation of: '{file}'");
+            //var projectDepJson = Path.GetDirectoryName(project.Path) + "/bin/Debug/netstandard2.0/" + project.AssemblyName + ".deps.json";
+            ////var projectDll = Path.GetDirectoryName(project.Path) + "/bin/Debug/netstandard2.0/" + project.AssemblyName + ".dll";
+            //if (!File.Exists(projectDepJson))
+            //{
+            //    //TODO: prebuild via dotnet so we can have deps.json
+            //}
+            //var reader = new DependencyContextJsonReader();
+            //var dependency = reader.Read(new FileStream(projectDepJson, FileMode.Open, FileAccess.Read));
+            //dependency.RuntimeLibraries.Select(lib =>
+            //{
+            //    if (lib.Type == "package")
+            //    {
+            //        var nugetPath = $"{lib.Path}/{lib.ResourceAssemblies.First().Path}";
+            //        return MetadataReference.CreateFromFile(nugetPath);
+            //    }
+            //});
+            //return GetReferences(Assembly.Load(projectDll));
 
-            //var sourceCode = fileIsCode ? file : File.ReadAllText(file);
+            var settings = NuGet.Configuration.Settings.LoadDefaultSettings(null);
+            var nugetPackageFolder = NuGet.Configuration.SettingsUtility.GetGlobalPackagesFolder(settings);
 
-            using (var peStream = new MemoryStream())
+            List<MetadataReference> refs = new List<MetadataReference>();
+            var projectAsset = Path.GetDirectoryName(project.Path) + "/obj/project.assets.json";
+            if (!File.Exists(projectAsset))
+                throw new InvalidOperationException($"Expected projectasset.json file not found at {projectAsset}. Ensure that project restore has run.");
+            string content = File.ReadAllText(projectAsset);
+            var lockFileFormat = new LockFileFormat();
+            var lockFile = lockFileFormat.Parse(content, "In Memory");
+            foreach (var lib in lockFile.Libraries)
             {
-                var result = GenerateCode(sourceCodes).Emit(peStream);
-
-                if (!result.Success)
+                if (lib.Type == "package")
                 {
-                    Console.WriteLine("Compilation done with error.");
-
-                    var failures = result.Diagnostics.Where(diagnostic => diagnostic.IsWarningAsError || diagnostic.Severity == DiagnosticSeverity.Error);
-
-                    foreach (var diagnostic in failures)
-                    {
-                        Console.Error.WriteLine("{0}: {1}", diagnostic.Id, diagnostic.GetMessage());
-                    }
-
-                    return null;
+                    var nugetPath = $"{nugetPackageFolder}/{lib.Path}/{lib.Files.FirstOrDefault(e => e.EndsWith(".dll"))}";
+                    if (!File.Exists(nugetPath))
+                        throw new InvalidOperationException($"Expected nuget file not found at {nugetPath}");
+                    refs.Add(MetadataReference.CreateFromFile(nugetPath));
                 }
-
-                Console.WriteLine("Compilation done without any error.");
-
-                peStream.Seek(0, SeekOrigin.Begin);
-
-                return peStream.ToArray();
+                else if (lib.Type == "project")
+                {
+                    var libProjectPath = Path.GetFullPath(Path.GetDirectoryName(project.Path) + "/" + lib.Path);
+                    var libProjectFolder = Path.GetDirectoryName(libProjectPath);
+                    var binPath = libProjectFolder + "/bin/Debug/netstandard2.0/" + Path.GetFileName(lib.Name) + ".dll";
+                    if (!File.Exists(binPath))
+                        throw new InvalidOperationException($"Expected dll file not found at {binPath}. Ensure that project has built successfully.");
+                    refs.Add(MetadataReference.CreateFromFile(binPath));
+                }
             }
+            return refs.ToArray();
         }
+
+        //public byte[]? Compile(params string[] sourceCodes)
+        //{
+        //    //Console.WriteLine($"Starting compilation of: '{file}'");
+
+        //    //var sourceCode = fileIsCode ? file : File.ReadAllText(file);
+
+        //    using (var peStream = new MemoryStream())
+        //    {
+        //        var result = GenerateCode(sourceCodes).Emit(peStream);
+
+        //        if (!result.Success)
+        //        {
+        //            Console.WriteLine("Compilation done with error.");
+
+        //            var failures = result.Diagnostics.Where(diagnostic => diagnostic.IsWarningAsError || diagnostic.Severity == DiagnosticSeverity.Error);
+
+        //            foreach (var diagnostic in failures)
+        //            {
+        //                Console.Error.WriteLine("{0}: {1}", diagnostic.Id, diagnostic.GetMessage());
+        //            }
+
+        //            return null;
+        //        }
+
+        //        Console.WriteLine("Compilation done without any error.");
+
+        //        peStream.Seek(0, SeekOrigin.Begin);
+
+        //        return peStream.ToArray();
+        //    }
+        //}
+
 
         public IEnumerable<SyntaxTree> GetSyntaxTrees(params string[] sourceCodePath)
         {
@@ -297,13 +345,13 @@ namespace BlazorJs.Compiler
         }
 
         int dllNumber;
-        public CSharpCompilation GenerateCode(params string[] sourceCodePath)
+        public CSharpCompilation GenerateCode(ProjectInfo project, params string[] sourceCodePath)
         {
             var syntaxTrees = GetSyntaxTrees(sourceCodePath);
             dllNumber++;
             return CSharpCompilation.Create($"_{dllNumber}.dll",
                 syntaxTrees.ToArray(),
-                references: GetReferences(sourceCodePath),
+                references: GetReferencesForProject(project),
                 options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary,
                     optimizationLevel: OptimizationLevel.Debug,
                     assemblyIdentityComparer: DesktopAssemblyIdentityComparer.Default));

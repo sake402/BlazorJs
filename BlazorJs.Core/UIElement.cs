@@ -18,7 +18,7 @@ namespace BlazorJs.Core
         public RenderFragment ContentBuilder { get; set; }
         //public FragmentDestructor TearDown { get; set; }
 
-        public UIFrameState State => this;
+        //public UIFrameState State => this;
 
         internal UIElement(
             IRenderer platformRenderer,
@@ -52,7 +52,6 @@ namespace BlazorJs.Core
             base.Dispose();
             //TearDown?.Invoke();
             Renderer.RemoveElement(/*ref */this);
-            ParentFrame.State.Remove(this);
         }
 
         public override string ToString()

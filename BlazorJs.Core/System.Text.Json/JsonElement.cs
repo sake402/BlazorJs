@@ -6,10 +6,10 @@
         public JsonElement(object obj)
         {
             Object = obj;
-            if (obj == null)
-                ValueKind = JsonValueKind.Null;
+            //if (obj == null)
+            //ValueKind = JsonValueKind.Null;
         }
-        public JsonValueKind ValueKind { get; }
+        //public JsonValueKind ValueKind { get; }
         public bool TryGetProperty(string path, out JsonElement element)
         {
             var o = Object[path];

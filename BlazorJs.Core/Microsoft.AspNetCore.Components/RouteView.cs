@@ -42,7 +42,6 @@ namespace Microsoft.AspNetCore.Components
         /// </summary>
         [Parameter]
         public Type DefaultLayout { get; set; }
-
         protected internal override void OnParametersSet()
         {
             if (RouteData == null)
@@ -70,7 +69,7 @@ namespace Microsoft.AspNetCore.Components
             {
                 component.Layout = pageLayoutType;
                 component.ChildContent = (RenderFragment)RenderPageWithParameters;
-            }, sequenceNumber: Utility.RouteView_LayoutView_SequenceNumber);
+            }, sequenceNumber: Utility.RouteView_LayoutView_SequenceNumber + pageLayoutType.GetHashCode());
         }
 
         private void RenderPageWithParameters(IUIFrame frame, object key = null)

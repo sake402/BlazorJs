@@ -25,7 +25,7 @@ namespace Microsoft.AspNetCore.Components.Forms
                 __attribute.Set("class", AttributeUtilities.CombineClassNames(this, Context.FieldClass));
                 __attribute.Set("value", BindConverter.FormatValue(Value?.ToString()));
                 __attribute.Set("@onchange", EventCallback.Factory.Create(this, Context.ChangeEventCallback));
-            }, null, sequenceNumber: 831193995);
+            }, null, sequenceNumber: 1911905262);
         }
 
     }

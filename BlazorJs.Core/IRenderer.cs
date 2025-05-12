@@ -10,6 +10,7 @@ namespace BlazorJs.Core
     internal partial interface IRenderer
     {
         IServiceProvider Services { get; }
+        IComponentActivator ComponentActivator { get; }
         void CreateText(UIText text);
         void RemoveText(UIText text);
         void UpdateText(UIText text);
@@ -26,12 +27,12 @@ namespace BlazorJs.Core
         void Flush();
     }
 
-    public static partial class RendererExtension
-    {
-        internal static void Render(this IRenderer renderer, IUIContent ui)
-        {
-            ui.Build();
-            renderer.Flush();
-        }
-    }
+    //public static partial class RendererExtension
+    //{
+    //    internal static void Render(this IRenderer renderer, IUIContent ui)
+    //    {
+    //        ui.Build();
+    //        renderer.Flush();
+    //    }
+    //}
 }

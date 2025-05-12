@@ -15,7 +15,7 @@ namespace Microsoft.AspNetCore.Components.Authorization
     {
         protected internal override void CascadeParameters()
         {
-            RequestCascadingParameter<Task<Microsoft.AspNetCore.Components.Authorization.AuthenticationState>>(e => ExistingCascadedAuthenticationState = e, cascadingParameterName: null);
+            RequestCascadingParameter<System.Threading.Tasks.Task<Microsoft.AspNetCore.Components.Authorization.AuthenticationState>>(e => ExistingCascadedAuthenticationState = e, cascadingParameterName: null);
             base.CascadeParameters();
         }
 

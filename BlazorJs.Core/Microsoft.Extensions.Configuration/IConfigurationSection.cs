@@ -15,6 +15,6 @@
         //
         // Summary:
         //     Gets or sets the section value.
-        string? Value { get; set; }
+        string Value { get; set; }
     }
 }

@@ -21,7 +21,7 @@ namespace Microsoft.AspNetCore.Components.Forms
             {
                 __attribute.Set("type", "file");
                 __attribute.Set("@attributes", (this.As<IReadOnlyDictionary<string, object>>()));
-            }, null, sequenceNumber: -1084895191);
+            }, null, sequenceNumber: 413124922);
         }
 
     }

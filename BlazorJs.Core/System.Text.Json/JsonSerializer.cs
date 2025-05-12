@@ -19,9 +19,9 @@ namespace System.Text.Json
     public static partial class JsonSerializer
     {
         [Template("JSON.stringify({0})")]
-        extern static string SerializeImpl(object value);
+        public extern static string SerializeImpl(object value);
         [Template("JSON.parse({0})")]
-        extern static object DeserializeImpl(string value);
+        public extern static object DeserializeImpl(string value);
 
         static void DeepCopy(object source, object destination)
         {
@@ -72,7 +72,7 @@ namespace System.Text.Json
             }
         }
 
-        static object Convert(object obj, Type type)
+        public static object Convert(object obj, Type type)
         {
             var newObject = Activator.CreateInstance(type);
             DeepCopy(obj, newObject);

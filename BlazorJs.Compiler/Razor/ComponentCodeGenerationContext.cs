@@ -9,22 +9,23 @@ namespace BlazorJs.Compiler.Razor
 {
     public class ComponentCodeGenerationContext
     {
-        public ComponentCodeGenerationContext(List<string> startupCodes)
+        public ComponentCodeGenerationContext(List<string> outStartupCodes)
         {
-            StartupCodes = startupCodes;
+            OutStartupCodes = outStartupCodes;
         }
         public required ProjectInfo Project { get; set; }
         public IEnumerable<string>? GlobalUsing { get; set; }
+        public string? RazorImports { get; set; }
         public string? RazorFile { get; set; }
         public string? CsFile { get; set; }
         public string Namespace { get; set; } = default!;
         public string ClassName { get; set; } = default!;
         public int RazorSequenceNumber { get; set; }
-        public INamedTypeSymbol? ComponentClassSymbol { get; set; }
+        public INamedTypeSymbol? ComponentClassSymbol { get; set; } 
         public RazorComponent? RazorComponentSymbol { get; set; }
         public CompilationUnitSyntax? ComponentClassCompilationUnit { get; set; }
         public Dictionary<string, ComponentCodeGenerationContext> KnownComponents { get; set; } = default!;
-        public List<string> StartupCodes { get; }
+        List<string> OutStartupCodes { get; }
         IEnumerable<IFieldSymbol> GetFieldDeep(INamedTypeSymbol? @class)
         {
             if (@class == null)
@@ -110,7 +111,7 @@ namespace BlazorJs.Compiler.Razor
             {
                 foreach (var _using in RazorComponentSymbol.Usings)
                 {
-                    AddUsing($"using {_using.Namespace};");
+                    AddUsing($"using {_using.Namespace}");
                 }
             }
             if (ComponentClassCompilationUnit != null)
@@ -170,7 +171,7 @@ namespace BlazorJs.Compiler.Razor
         {{{routeRegistrations}
         }}
 ";
-                StartupCodes.Add($"{Namespace}.{ClassName}.RegisterRoute();");
+                OutStartupCodes.Add($"{Namespace}.{ClassName}.RegisterRoute();");
             }
 
             var injectProperties = ComponentClassSymbol

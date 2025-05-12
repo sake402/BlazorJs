@@ -42,11 +42,11 @@ namespace Microsoft.AspNetCore.Components
     public partial struct EventCallback<T> : IEventCallback
     {
         public object Receiver { get; }
-        public Delegate Delegate { get; }
+        public MulticastDelegate Delegate { get; }
         EventCallbackDelegateType type;
         public EventCallbackFlags Flags { get; }
 
-        internal EventCallback(object receiver, Delegate target, EventCallbackDelegateType type, EventCallbackFlags eventFlags)
+        internal EventCallback(object receiver, MulticastDelegate target, EventCallbackDelegateType type, EventCallbackFlags eventFlags)
         {
             Receiver = receiver;
             Delegate = target;
@@ -85,7 +85,7 @@ namespace Microsoft.AspNetCore.Components
 
         Task IEventCallback.InvokeAsync(Event eventData)
         {
-            return InvokeAsync((object)eventData);
+            return InvokeAsync(eventData);
         }
 
         public async Task InvokeAsync(object eventData)
@@ -93,16 +93,9 @@ namespace Microsoft.AspNetCore.Components
             if (Delegate != null)
             {
                 var scope = Receiver ?? Delegate["$scope"];
-                if (scope is ComponentBase component)
+                if (scope is IHandleEvent he)
                 {
-                    Task task = Task.CompletedTask;
-                    EventCallback<T> me = this;
-                    component.WithErrorHandling((icomponent) =>
-                    {
-                        task = me.Callback(eventData);
-                    }, ComponentLifeCycle.OnEventHandling);
-                    component.StateHasChanged();
-                    await component.RenderOnAsyncCompletion(task, ComponentLifeCycle.OnEventHandling);
+                    await he.HandleEventAsync(new EventCallbackWorkItem(Delegate), eventData);
                 }
                 else
                 {

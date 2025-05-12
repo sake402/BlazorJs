@@ -15,7 +15,7 @@ namespace BlazorJs.Core
         public RenderFragment ContentBuilder { get; internal set; }
         //public readonly FragmentDestructor TearDown;
 
-        public UIFrameState State => this;
+        //public UIFrameState State => this;
         internal UIFrame(IRenderer renderer) : base(renderer, null, 0, null)
         {
             ContentBuilder = null;
@@ -53,7 +53,6 @@ namespace BlazorJs.Core
         public override void Dispose()
         {
             base.Dispose();
-            ParentFrame.State.Remove(this);
             //TearDown?.Invoke();
         }
 

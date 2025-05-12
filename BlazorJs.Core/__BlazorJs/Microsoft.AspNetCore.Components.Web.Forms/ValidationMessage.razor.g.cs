@@ -28,8 +28,8 @@ namespace Microsoft.AspNetCore.Components.Forms
                     __attribute.Set("@attributes", (this.As<IReadOnlyDictionary<string, object>>()));
                 }, (__frame1, __key1) =>
                 {
-                    __frame1.Content(message, key: __key1, sequenceNumber: 446732861);
-                }, key: message, sequenceNumber: 446732862);
+                    __frame1.Content(message, key: __key1, sequenceNumber: 1251613617);
+                }, key: message, sequenceNumber: 1251613618);
             }
         }
 

@@ -10,11 +10,13 @@ namespace BlazorJs.Compiler.Razor
 {
     public class RazorXmlElementNode : RazorXmlHasChildrenNode
     {
-        public RazorXmlElementNode(string tagName, RazorXmlNode? parentNode) : base(parentNode)
+        public RazorXmlElementNode(string tagName, ReadOnlyMemory<char> raw, RazorXmlNode? parentNode) : base(parentNode)
         {
             TagName = tagName;
+            Raw = raw;
         }
 
+        public ReadOnlyMemory<char> Raw { get; }
         public string TagName { get; }
 
         public bool IsComponent(ComponentCodeGenerationContext context)
@@ -55,10 +57,50 @@ namespace BlazorJs.Compiler.Razor
             return $"{ToStringFormatTabs}<{TagName} {string.Join(" ", Attributes.Select(a => a.ToString()))}>\r\n{base.ToString()}\r\n{ToStringFormatTabs}</{TagName}>";
         }
 
+        public RazorXmlElementAttribute? GetAttributes()
+        {
+            return Attributes.SingleOrDefault(a => a.Name == "@attributes");
+        }
+
+        public RazorXmlElementAttribute? GetKeyed()
+        {
+            return Attributes.SingleOrDefault(a => a.Name == "@key");
+        }
+
+        public RazorXmlElementAttribute? GetRefed()
+        {
+            return Attributes.SingleOrDefault(a => a.Name == "@ref");
+        }
+
+        bool? canuseMarkup;
+        private bool CanUseMarkup(ComponentCodeGenerationContext context)
+        {
+            if (canuseMarkup != null)
+                return canuseMarkup.Value;
+            if (IsComponent(context))
+            {
+                canuseMarkup = false;
+                return false;
+            }
+            if (!Attributes.Any(a => a.Name.StartsWith("@")))
+            {
+                if (Attributes.All(a => !(a.Value?.Contains("@") ?? false)))
+                {
+                    if (UITemplateContentNodes.All(e => e is RazorTextNode || (e is RazorXmlElementNode element && !element.IsComponent(context) && element.CanUseMarkup(context))))
+                    {
+                        canuseMarkup = true;
+                        return true;
+                    }
+                }
+            }
+            canuseMarkup = false;
+            return false;
+        }
+
         public override string GenerateCode(int tabDepth, int parameterDepth, ComponentCodeGenerationContext context)
         {
-            var keyed = Attributes.SingleOrDefault(a => a.Name == "@key");
-            var refed = Attributes.SingleOrDefault(a => a.Name == "@ref");
+            var keyed = GetKeyed();
+            var refed = GetRefed();
             if (!IsComponent(context))
             {
                 if (TagName == "text" || TagName == "ktext" || TagName == "itext") //the <text> is just a pseudo, we wont generate a code for it
@@ -75,26 +117,33 @@ namespace BlazorJs.Compiler.Razor
                 }
                 else
                 {
-                    string? childContents = "null";
-                    if (UITemplateContentNodes.Count() > 0)
+                    if (CanUseMarkup(context))
                     {
-                        var cc = string.Join("\r\n", UITemplateContentNodes.Select(a => a.GenerateCode(tabDepth, parameterDepth + 1, context)).Where(a => !string.IsNullOrEmpty(a)));
-                        childContents = $@"(__frame{parameterDepth + 1}, __key{parameterDepth + 1}) =>
+                        return $"{GetCodeFormatTabs(tabDepth)}__frame{parameterDepth}.Markup(\"{RazorUtility.Escape(Raw.Span)}\"{(parameterDepth != 0 ? $", key: __key{parameterDepth}" : "")}, sequenceNumber: {context.RazorSequenceNumber++});";
+                    }
+                    else
+                    {
+                        string? childContents = "null";
+                        if (UITemplateContentNodes.Count() > 0)
+                        {
+                            var cc = string.Join("\r\n", UITemplateContentNodes.Select(a => a.GenerateCode(tabDepth, parameterDepth + 1, context)).Where(a => !string.IsNullOrEmpty(a)));
+                            childContents = $@"(__frame{parameterDepth + 1}, __key{parameterDepth + 1}) =>
 {GetCodeFormatTabs(tabDepth)}{{
 {cc}
 {GetCodeFormatTabs(tabDepth)}}}";
-                    }
-                    string? attributes = "null";
-                    var mAttributes = Attributes.Where(a => a.Name != "@key" && a.Name != "@ref");
-                    if (mAttributes.Any())
-                    {
-                        var ats = string.Join("\r\n", mAttributes.Select(a => a.GenerateCode(tabDepth, parameterDepth + 1, context)).Where(a => !string.IsNullOrEmpty(a)));
-                        attributes = $@"(ref UIElementAttribute __attribute) =>
+                        }
+                        string? attributes = "null";
+                        var mAttributes = Attributes.Where(a => a.Name != "@key" && a.Name != "@ref");
+                        if (mAttributes.Any())
+                        {
+                            var ats = string.Join("\r\n", mAttributes.Select(a => a.GenerateCode(tabDepth, parameterDepth + 1, context)).Where(a => !string.IsNullOrEmpty(a)));
+                            attributes = $@"(ref UIElementAttribute __attribute) =>
 {GetCodeFormatTabs(tabDepth)}{{
 {ats}
 {GetCodeFormatTabs(tabDepth)}}}";
+                        }
+                        return @$"{GetCodeFormatTabs(tabDepth)}{(refed != null ? $"{refed.Value} = " : "")}__frame{parameterDepth}.Element(""{TagName}"", {attributes}, {childContents}{(keyed?.Value != null || parameterDepth != 0 ? $", key: {(keyed?.Value ?? $"__key{parameterDepth}")}" : "")}, sequenceNumber: {context.RazorSequenceNumber++});";
                     }
-                    return @$"{GetCodeFormatTabs(tabDepth)}{(refed != null ? $"{refed.Value} = " : "")}__frame{parameterDepth}.Element(""{TagName}"", {attributes}, {childContents}{(keyed?.Value != null || parameterDepth != 0 ? $", key: {(keyed?.Value ?? $"__key{parameterDepth}")}" : "")}, sequenceNumber: {context.RazorSequenceNumber++});";
                 }
             }
             else

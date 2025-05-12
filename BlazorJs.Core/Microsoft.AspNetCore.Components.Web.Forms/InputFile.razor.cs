@@ -16,7 +16,7 @@ namespace Microsoft.AspNetCore.Components.Forms
     /// </summary>
     public partial class InputFile : ComponentBase, IInputFileJsCallbacks
     {
-        private HTMLElement _inputFileElement;
+        private ElementReference _inputFileElement;
 
         //private InputFileJsCallbacksRelay _jsCallbacksRelay;
 
@@ -38,7 +38,7 @@ namespace Microsoft.AspNetCore.Components.Forms
         /// May be <see langword="null"/> if accessed before the component is rendered.
         /// </para>
         /// </summary>
-        public HTMLElement Element
+        public ElementReference Element
         {
             get => _inputFileElement;
             protected set => _inputFileElement = value;
@@ -49,7 +49,7 @@ namespace Microsoft.AspNetCore.Components.Forms
             if (firstRender)
             {
                 //_jsCallbacksRelay = new InputFileJsCallbacksRelay(this);
-                InputFileInterop.Init(this, _inputFileElement.As<HTMLInputElement>());
+                InputFileInterop.Init(this, _inputFileElement.Element.As<HTMLInputElement>());
             }
             base.OnAfterRender(firstRender);
         }
@@ -66,14 +66,14 @@ namespace Microsoft.AspNetCore.Components.Forms
 
         internal Stream OpenReadStream(BrowserFile file, long maxAllowedSize, CancellationToken cancellationToken)
             => new BrowserFileStream(
-                _inputFileElement.As<HTMLInputElement>(),
+                _inputFileElement.Element.As<HTMLInputElement>(),
                 file,
                 maxAllowedSize,
                 cancellationToken);
 
         internal async Task<IBrowserFile> ConvertToImageFileAsync(BrowserFile file, string format, int maxWidth, int maxHeight)
         {
-            var imageFile = await InputFileInterop.ToImageFile(_inputFileElement.As<HTMLInputElement>(), file.Id, format, maxWidth, maxHeight);
+            var imageFile = await InputFileInterop.ToImageFile(_inputFileElement.Element.As<HTMLInputElement>(), file.Id, format, maxWidth, maxHeight);
 
             if (imageFile is null)
             {

@@ -2,13 +2,10 @@
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
-		<LangVersion>10.0</LangVersion>
-		<ImplicitUsings>disable</ImplicitUsings>
-		<Nullable>disable</Nullable>
 
 		<PackageOutputPath>./nupkg</PackageOutputPath>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<PackageId>BlazorJs.Compiler</PackageId>
+		<PackageId>BlazorJs.Core</PackageId>
 		<PackageVersion>1.0.0</PackageVersion>
 		<PackageProjectUrl>https://github.com/sake402/BlazorJs</PackageProjectUrl>
 		<PackageTags>blazor,javascript</PackageTags>

@@ -17,8 +17,8 @@ namespace Microsoft.AspNetCore.Components.Routing
         {
             NavigationManager = provider.GetRequiredService<Microsoft.AspNetCore.Components.NavigationManager>();
             NavigationInterception = provider.GetRequiredService<Microsoft.AspNetCore.Components.Routing.INavigationInterception>();
-            ScrollToLocationHash = provider.GetRequiredService<Microsoft.AspNetCore.Components.Routing.IScrollToLocationHash>();
-            ServiceProvider = provider.GetRequiredService<IServiceProvider>();
+            ScrollToLocationHash = provider.GetService<Microsoft.AspNetCore.Components.Routing.IScrollToLocationHash>();
+            ServiceProvider = provider.GetRequiredService<System.IServiceProvider>();
 
         }
 

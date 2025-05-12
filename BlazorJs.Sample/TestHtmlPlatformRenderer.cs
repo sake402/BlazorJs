@@ -20,7 +20,7 @@
 //            fragment(rootFragment);
 //        }
 
-//        static string GetUID(IUIContent content)
+//        static string GetUID(IUIContent content)  
 //        {
 //            if (content.State.Key == null)
 //            {

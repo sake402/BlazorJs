@@ -22,7 +22,7 @@ namespace BlazorJs.Compiler.Razor
 
         public override string GenerateCode(int tabDepth, int parameterDepth, ComponentCodeGenerationContext context)
         {
-            return $"{GetCodeFormatTabs(tabDepth)}__frame{parameterDepth}.Text(@\"{Text.Replace("\"", "\"\"")}\"{(parameterDepth > 0 ? $", key: __key{parameterDepth}" : "")}, sequenceNumber: {context.RazorSequenceNumber++});";
+            return $"{GetCodeFormatTabs(tabDepth)}__frame{parameterDepth}.Text(\"{RazorUtility.Escape(Text)}\"{(parameterDepth > 0 ? $", key: __key{parameterDepth}" : "")}, sequenceNumber: {context.RazorSequenceNumber++});";
         }
     }
 }

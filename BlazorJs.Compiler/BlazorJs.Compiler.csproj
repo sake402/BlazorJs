@@ -31,7 +31,8 @@
 		</PackageReference>
 		<PackageReference Include="Microsoft.Extensions.DependencyModel" Version="8.0.1" />
 		<PackageReference Include="NUglify" Version="1.21.11" />
-
+		<PackageReference Include="NuGet.ProjectModel" Version="6.13.2" />
+		
 		<!--<PackageReference Include="AngleSharp" Version="1.1.2"></PackageReference>-->
 		<!--<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />-->
 		<!--<PackageReference Include="Microsoft.AspNet.Razor" Version="3.2.9" />-->

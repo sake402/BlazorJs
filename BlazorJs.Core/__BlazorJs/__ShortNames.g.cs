@@ -44,6 +44,16 @@ namespace BlazorJs.Core
 
 namespace BlazorJs.Core
 {
+    [Name("bc_rh")]
+    public partial interface RenderHandle
+    {
+    
+    }
+}
+
+
+namespace BlazorJs.Core
+{
     [Name("bc_i")]
     internal partial interface IRenderer
     {
@@ -457,6 +467,26 @@ namespace Microsoft.AspNetCore.Components
 
 namespace Microsoft.AspNetCore.Components
 {
+    [Name("mac_dca")]
+    internal sealed partial class DefaultComponentActivator
+    {
+    
+    }
+}
+
+
+namespace Microsoft.AspNetCore.Components.Rendering
+{
+    [Name("macr_d")]
+    public abstract partial class Dispatcher
+    {
+    
+    }
+}
+
+
+namespace Microsoft.AspNetCore.Components
+{
     [Name("mac_dc")]
     public partial class DynamicComponent
     {
@@ -547,6 +577,16 @@ namespace Microsoft.AspNetCore.Components
 
 namespace Microsoft.AspNetCore.Components
 {
+    [Name("mac_ia")]
+    public partial interface IComponentActivator
+    {
+    
+    }
+}
+
+
+namespace Microsoft.AspNetCore.Components
+{
     [Name("mac_ic$2")]
     public partial interface ILayoutComponent
     {
@@ -557,7 +597,7 @@ namespace Microsoft.AspNetCore.Components
 
 namespace Microsoft.AspNetCore.Components
 {
-    [Name("mac_ia")]
+    [Name("mac_ia$2")]
     public partial class InjectAttribute
     {
     

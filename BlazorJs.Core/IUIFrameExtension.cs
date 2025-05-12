@@ -5,47 +5,48 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using static H5.Core.dom;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.RenderTree;
 
 namespace BlazorJs.Core
 {
     public static partial class IUIFrameExtension
     {
-        internal static void Render(this IUIContent reference)
-        {
-            var renderer = reference.State.Renderer;
-            if (reference is ComponentBase component)
-            {
-                component.WithErrorHandling((icomponent) =>
-                {
-                    renderer.Render(icomponent);
-                }, ComponentLifeCycle.OnRendering);
-            }
-            else
-            {
-                renderer.Render(reference);
-            }
-        }
+        //internal static void Render(this IUIContent reference)
+        //{
+        //    var renderer = reference.State.Renderer;
+        //    if (reference is ComponentBase component)
+        //    {
+        //        component.WithErrorHandling((icomponent) =>
+        //        {
+        //            renderer.Render(icomponent);
+        //        }, ComponentLifeCycle.OnRendering);
+        //    }
+        //    else
+        //    {
+        //        renderer.Render(reference);
+        //    }
+        //}
 
-        internal static async Task RenderOnAsyncCompletion(this IUIContent reference, Task task, ComponentLifeCycle taskLifeCycle = ComponentLifeCycle.Unknown)
-        {
-            if (!task.IsCompleted)
-            {
-                try
-                {
-                    await task;
-                }
-                catch (Exception e)
-                {
-                    if (taskLifeCycle != ComponentLifeCycle.Unknown && reference is ComponentBase component)
-                    {
-                        bool handled = component.HandleError(e, taskLifeCycle);
-                        if (!handled)
-                            throw;
-                    }
-                }
-                reference.Render();
-            }
-        }
+        //internal static async Task RenderOnAsyncCompletion(this IUIContent reference, Task task, ComponentLifeCycle taskLifeCycle = ComponentLifeCycle.Unknown)
+        //{
+        //    if (!task.IsCompleted)
+        //    {
+        //        try
+        //        {
+        //            await task;
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            if (taskLifeCycle != ComponentLifeCycle.Unknown && reference is ComponentBase component)
+        //            {
+        //                bool handled = component.HandleError(e, taskLifeCycle);
+        //                if (!handled)
+        //                    throw;
+        //            }
+        //        }
+        //        reference.Render();
+        //    }
+        //}
 
         internal static IUIContent GetBefore(this IUIContent reference)
         {
@@ -108,16 +109,25 @@ namespace BlazorJs.Core
             object key = null,
             [CallerLineNumber] int sequenceNumber = 0)
         {
-            var uiElement = frame.State.GetOrCreate(sequenceNumber, (id) =>
+            do
             {
-                var muiElement = new UIElement(frame.State.Renderer, frame, id, tag, key);
-                return muiElement;
-            }, key);
-            uiElement.AttributeBuilder = attributeBuilder;
-            uiElement.ContentBuilder = contentBuilder;
-            //uiElement.TearDown = tearDown;
-            uiElement.Build(key);
-            return uiElement.Elements[0].As<HTMLElement>();
+                var uiElement = frame.State.GetOrCreate(sequenceNumber, (id) =>
+                {
+                    var muiElement = new UIElement(frame.State.Renderer, frame, id, tag, key);
+                    return muiElement;
+                }, key);
+                //if we change the element tag on the same sequenceNumber, dispose the current state and element, rebuild
+                if (uiElement.Tag != tag)
+                {
+                    uiElement.Dispose();
+                    continue;
+                }
+                uiElement.AttributeBuilder = attributeBuilder;
+                uiElement.ContentBuilder = contentBuilder;
+                //uiElement.TearDown = tearDown;
+                uiElement.Build(key);
+                return uiElement.Elements[0].As<HTMLElement>();
+            } while (true);
         }
 
         public static Node Text(
@@ -203,91 +213,39 @@ namespace BlazorJs.Core
 
         public static IComponent Component(this IUIFrame frame, Type componentType, Action<IComponent> attributeBuilder, object key = null, [CallerLineNumber] int sequenceNumber = 0)
         {
-            Task onInitializedTask = Task.CompletedTask;
-            Task onParametersSetTask = Task.CompletedTask;
-            Task onAfterRenderTask = Task.CompletedTask;
-            bool justCreated = false;
-            var component = frame.State.GetOrCreate(sequenceNumber, (id) =>
+            do
             {
-                var mcomponent = (IComponent)((frame.State.Renderer.Services.GetService(componentType) ?? Activator.CreateInstance(componentType)));
-                if (mcomponent is ComponentBase mcb)
+                var state = frame.State.GetOrCreate(sequenceNumber, (id) =>
                 {
-                    mcb.State = new UIFrameState(frame.State.Renderer, frame, id, key);
-                    mcb.WithErrorHandling((icomponent) =>
+                    var renderer = (BrowserNativeRenderer)frame.State.Renderer;
+                    var mcomponent = renderer.ComponentActivator.CreateInstance(componentType);
+                    var mstate = new UIFrameState(renderer, frame, id, key);
+                    mstate.Component = mcomponent;
+                    mstate.ComponentType = componentType;
+                    mcomponent.Attach(new RenderHandle(renderer, id));
+                    renderer.Register(id, mstate);
+                    if (mcomponent is ComponentBase mcb)
                     {
-                        icomponent.InjectServices(frame.State.Renderer.Services);
-                        icomponent.CascadeParameters();
-                    }, ComponentLifeCycle.OnInjectingService);
-                    justCreated = true;
-                }
-                frame.State.Renderer.CreateComponent(mcomponent);
-                return mcomponent;
-            }, key/*(componentType, key)*/);
-            attributeBuilder?.Invoke(component);
-            if (component is ComponentBase cb)
-            {
-                //if (justCreated)
-                //{
-                //    cb.WithErrorHandling((icomponent) =>
-                //    {
-                //        icomponent.CascadeParameters();
-                //    }, ComponentLifeCycle.OnInitializing);
-                //}
-                cb.WithErrorHandling((icomponent) =>
-                {
-                    icomponent.OnParametersSet();
-                }, ComponentLifeCycle.OnParametersSetting);
-                cb.WithErrorHandling((icomponent) =>
-                {
-                    onParametersSetTask = icomponent.OnParametersSetAsync();
-                }, ComponentLifeCycle.OnParametersSettingAsnc);
-                if (justCreated)
-                {
-                    cb.WithErrorHandling((icomponent) =>
-                    {
-                        icomponent.OnInitialized();
-                    }, ComponentLifeCycle.OnInitializing);
-                    cb.WithErrorHandling((icomponent) =>
-                    {
-                        onInitializedTask = icomponent.OnInitializedAsync();
-                    }, ComponentLifeCycle.OnInitializingAsync);
-                }
-                cb.WithErrorHandling((icomponent) =>
-                {
-                    icomponent.Build(key);
-                }, ComponentLifeCycle.OnRendering);
-                cb.WithErrorHandling((icomponent) =>
-                {
-                    icomponent.OnAfterRender(!icomponent.hasRendered);
-                }, ComponentLifeCycle.OnAfterRender);
-                cb.WithErrorHandling((icomponent) =>
-                {
-                    onAfterRenderTask = icomponent.OnAfterRenderAsync(!icomponent.hasRendered);
-                }, ComponentLifeCycle.OnAfterRenderAsnyc);
-                cb.hasRendered = true;
-            }
-            else
-            {
-                component.BuildRenderTree(frame);
-            }
-            //if (!onInitializedTask.IsCompleted || !onParametersSetTask.IsCompleted || !onAfterRenderTask.IsCompleted)
-            //{
-            RenderOnAsyncCompletion(component, Task.WhenAll(onInitializedTask, onParametersSetTask, onAfterRenderTask)).ContinueWith(t =>
-            {
-                var exception = t.Exception ?? onInitializedTask.Exception ?? onParametersSetTask.Exception ?? onAfterRenderTask.Exception;
-                if (exception != null)
-                {
-                    if (component is ComponentBase cbb)
-                    {
-                        var handled = cbb.HandleError(exception, ComponentLifeCycle.Unknown);
-                        if (handled)
-                            return;
+                        mcb.WithErrorHandling((icomponent) =>
+                        {
+                            icomponent.InjectServices(renderer.Services);
+                            icomponent.CascadeParameters();
+                        }, ComponentLifeCycle.OnInjectingService);
                     }
-                    System.Console.Log(exception);
+                    renderer.CreateComponent(mcomponent);
+                    //return mcomponent;
+                    return mstate;
+                }, key);
+                //if we change the component type on the same sequenceNumber, dispose the current state and component, rebuild
+                if (state.ComponentType != componentType)
+                {
+                    state.Dispose();
+                    continue;
                 }
-            });
-            //}
-            return component;
+                attributeBuilder?.Invoke(state.Component);
+                Task task = state.Component.SetParametersAsync(default);
+                return state.Component;
+            } while (true);
         }
 
         public static T Component<T>(this IUIFrame frame, Action<T> attributeBuilder, object key = null, [CallerLineNumber] int sequenceNumber = 0)

@@ -15,7 +15,7 @@ namespace Microsoft.Extensions.Configuration
         //
         // Returns:
         //     The configuration value.
-        string? this[string key] { get; set; }
+        string this[string key] { get; set; }
 
         //
         // Summary:
