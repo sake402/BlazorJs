@@ -3,15 +3,10 @@ using System;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using NUglify;
-using System.Linq;
 using System.IO;
-using System.Collections;
-using System.Collections.Generic;
 using System.Threading;
-using BlazorJs.Compiler.Razor;
-using System.Diagnostics;
 using System.Reflection;
+using BlazorJs.Compiler.RazorToCSharp;
 
 var result = await $"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}/h5.exe check-if-online".CLI();
 if (result.ExitCode != 0)
@@ -305,7 +300,7 @@ void ProcessProject(BlazorJs.Compiler.ProjectInfo project)
         components[componentClassName] = context;
     }
 
-    Console.WriteLine($"Generating codes...");
+    Console.WriteLine($"Generating razor codes...");
 
     foreach (var component in components.Where(c => c.Value.RazorFile != null || c.Value.CsFile != null))
     {
@@ -342,6 +337,21 @@ namespace {project.Namespace}
 
     var shortNames = GenerateShortNames(compilation);
     File.WriteAllText(Path.Combine(outputPath, "__ShortNames.g.cs"), shortNames);
+
+    Console.WriteLine($"Transpiling to js...");
+    //compile csfiles to js
+    csFiles = Directory.EnumerateFiles(projectFolder, "*.cs", SearchOption.AllDirectories).ToList();
+    var syntaxTrees = compiler.GetSyntaxTrees(csFiles.ToArray());
+    compilation = compiler.GenerateCode(project, csFiles.ToArray());
+    var global = new GlobalCompilationVisitor(compilation);
+    foreach (var tree in compilation.SyntaxTrees)
+    {
+        var visitor = new CSToJSSyntaxVisitor(global, tree);
+        ((CSharpSyntaxNode)tree.GetRoot()).Accept(visitor);
+        global.Visitors[tree] = visitor;
+    }
+    var codes = string.Join("\r\n", global.Visitors.Select(v => v.Value.ToString()));
+    File.WriteAllText(Path.Combine(outputPath, "__BlazorJs.js"), codes);
 }
 
 static IEnumerable<string> SplitByCamelCase(string str)

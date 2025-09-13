@@ -29,9 +29,9 @@ namespace Microsoft.AspNetCore.Components.Forms
                 __component0.Value = _context;
                 __component0.ChildContent = (__frame1, __key1) =>
                 {
-                    __frame1.Content(ChildContent, key: __key1, sequenceNumber: -1219518615);
+                    __frame1.Content(ChildContent, key: __key1, sequenceNumber: 334392485);
                 };
-            }, sequenceNumber: -1219518614);
+            }, sequenceNumber: 334392486);
         }
 
     }

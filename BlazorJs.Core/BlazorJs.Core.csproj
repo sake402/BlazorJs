@@ -1,5 +1,8 @@
 ﻿<Project Sdk="h5.Target/23.2.35852">
 
+	<Import Sdk="Microsoft.NET.Sdk.Razor" Project="Sdk.targets" />
+	<Import Sdk="Microsoft.NET.Sdk.StaticWebAssets" Project="Sdk.targets" />
+
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
 

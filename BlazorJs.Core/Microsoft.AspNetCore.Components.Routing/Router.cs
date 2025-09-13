@@ -174,18 +174,16 @@ namespace Microsoft.AspNetCore.Components.Routing
             _routeTableLastBuiltForRouteKey = default;
         }
 
-        //TODO:Bug: this shouldnt be needed, but the view isnt changing unless we change the sequence number
-        int seedSequence;
+
         RenderFragment _viewFragment;
 
         protected internal override void BuildRenderTree(IUIFrame frame, object key = null)
         { 
-            frame.Content(_viewFragment, sequenceNumber: Utility.Router_View_SequenceNumber/* + seedSequence*/);
+            frame.Content(_viewFragment, sequenceNumber: Utility.Router_View_SequenceNumber);
         }
 
         void Render(RenderFragment fragment)
         {
-            seedSequence++;
             _viewFragment = fragment;
             StateHasChanged();
         }

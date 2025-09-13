@@ -9,7 +9,7 @@ namespace Microsoft.AspNetCore.Components.Web
     /// <summary>
     /// Captures errors thrown from its child content.
     /// </summary>
-    public class ErrorBoundary : ErrorBoundaryBase
+    public partial class ErrorBoundary : ErrorBoundaryBase
     {
         [Inject] private IErrorBoundaryLogger ErrorBoundaryLogger { get; set; }
 

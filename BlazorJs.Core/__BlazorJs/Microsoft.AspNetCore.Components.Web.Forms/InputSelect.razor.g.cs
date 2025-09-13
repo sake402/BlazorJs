@@ -25,7 +25,7 @@ namespace Microsoft.AspNetCore.Components.Forms
                     __attribute.Set("multiple", _isMultipleSelect);
                     __attribute.Set("value", @BindConverter.FormatValue(CurrentValue)?.ToString());
                     __attribute.Set("@onchange", EventCallback.Factory.CreateBinder(this, (Action<string[]>)SetCurrentValueAsStringArray, default));
-                }, null, sequenceNumber: 1222492441);
+                }, null, sequenceNumber: 663613510);
             }
             else
             {
@@ -38,7 +38,7 @@ namespace Microsoft.AspNetCore.Components.Forms
                     var bindGetValue1 = @CurrentValueAsString;
                     __attribute.Set("value", bindGetValue1);
                     __attribute.Set("@onchange", EventCallback.Factory.CreateBinder(this, __value => @CurrentValueAsString = __value, bindGetValue1));
-                }, null, sequenceNumber: 1222492442);
+                }, null, sequenceNumber: 663613511);
             }
         }
 

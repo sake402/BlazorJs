@@ -14,8 +14,8 @@ namespace BlazorJs.Sample.Layout
 
         protected override void BuildRenderTree(IUIFrame __frame0, object __key = null)
         {
-            __frame0.Markup("<div class=\"top-row ps-3 navbar navbar-dark\">\r\n    <div class=\"container-fluid\">\r\n        <a class=\"navbar-brand\" href=\"\">MyBlazorWeb</a>\r\n    </div>\r\n</div>", sequenceNumber: -917386754);
-            __frame0.Markup("<input type=\"checkbox\" title=\"Navigation menu\" class=\"navbar-toggler\" />", sequenceNumber: -917386753);
+            __frame0.Markup("<div class=\"top-row ps-3 navbar navbar-dark\">\r\n    <div class=\"container-fluid\">\r\n        <a class=\"navbar-brand\" href=\"\">MyBlazorWeb</a>\r\n    </div>\r\n</div>", sequenceNumber: 598861895);
+            __frame0.Markup("<input type=\"checkbox\" title=\"Navigation menu\" class=\"navbar-toggler\" />", sequenceNumber: 598861896);
             __frame0.Element("div", (ref UIElementAttribute __attribute) =>
             {
                 __attribute.Set("class", "nav-scrollable");
@@ -39,11 +39,11 @@ namespace BlazorJs.Sample.Layout
                             __component3.Match = NavLinkMatch.All;
                             __component3.ChildContent = (__frame4, __key4) =>
                             {
-                                __frame4.Markup("<span class=\"bi bi-house-door-fill\" aria-hidden=\"true\"></span>", key: __key4, sequenceNumber: -917386752);
-                                __frame4.Text("Home\r\n            ", key: __key4, sequenceNumber: -917386751);
+                                __frame4.Markup("<span class=\"bi bi-house-door-fill\" aria-hidden=\"true\"></span>", key: __key4, sequenceNumber: 598861897);
+                                __frame4.Text("Home\r\n            ", key: __key4, sequenceNumber: 598861898);
                             };
-                        }, key: __key3, sequenceNumber: -917386750);
-                    }, key: __key2, sequenceNumber: -917386749);
+                        }, key: __key3, sequenceNumber: 598861899);
+                    }, key: __key2, sequenceNumber: 598861900);
                     __frame2.Element("div", (ref UIElementAttribute __attribute) =>
                     {
                         __attribute.Set("class", "nav-item px-3");
@@ -55,11 +55,11 @@ namespace BlazorJs.Sample.Layout
                             __component3["href"] = "counter";
                             __component3.ChildContent = (__frame4, __key4) =>
                             {
-                                __frame4.Markup("<span class=\"bi bi-plus-square-fill\" aria-hidden=\"true\"></span>", key: __key4, sequenceNumber: -917386748);
-                                __frame4.Text("Counter\r\n            ", key: __key4, sequenceNumber: -917386747);
+                                __frame4.Markup("<span class=\"bi bi-plus-square-fill\" aria-hidden=\"true\"></span>", key: __key4, sequenceNumber: 598861901);
+                                __frame4.Text("Counter\r\n            ", key: __key4, sequenceNumber: 598861902);
                             };
-                        }, key: __key3, sequenceNumber: -917386746);
-                    }, key: __key2, sequenceNumber: -917386745);
+                        }, key: __key3, sequenceNumber: 598861903);
+                    }, key: __key2, sequenceNumber: 598861904);
                     __frame2.Element("div", (ref UIElementAttribute __attribute) =>
                     {
                         __attribute.Set("class", "nav-item px-3");
@@ -71,11 +71,11 @@ namespace BlazorJs.Sample.Layout
                             __component3["href"] = "weather";
                             __component3.ChildContent = (__frame4, __key4) =>
                             {
-                                __frame4.Markup("<span class=\"bi bi-list-nested\" aria-hidden=\"true\"></span>", key: __key4, sequenceNumber: -917386744);
-                                __frame4.Text("Weather\r\n            ", key: __key4, sequenceNumber: -917386743);
+                                __frame4.Markup("<span class=\"bi bi-list-nested\" aria-hidden=\"true\"></span>", key: __key4, sequenceNumber: 598861905);
+                                __frame4.Text("Weather\r\n            ", key: __key4, sequenceNumber: 598861906);
                             };
-                        }, key: __key3, sequenceNumber: -917386742);
-                    }, key: __key2, sequenceNumber: -917386741);
+                        }, key: __key3, sequenceNumber: 598861907);
+                    }, key: __key2, sequenceNumber: 598861908);
                     __frame2.Element("div", (ref UIElementAttribute __attribute) =>
                     {
                         __attribute.Set("class", "nav-item px-3");
@@ -87,11 +87,11 @@ namespace BlazorJs.Sample.Layout
                             __component3["href"] = "Sudoku";
                             __component3.ChildContent = (__frame4, __key4) =>
                             {
-                                __frame4.Markup("<span class=\"bi bi-list-nested\" aria-hidden=\"true\"></span>", key: __key4, sequenceNumber: -917386740);
-                                __frame4.Text("Sudoku\r\n            ", key: __key4, sequenceNumber: -917386739);
+                                __frame4.Markup("<span class=\"bi bi-list-nested\" aria-hidden=\"true\"></span>", key: __key4, sequenceNumber: 598861909);
+                                __frame4.Text("Sudoku\r\n            ", key: __key4, sequenceNumber: 598861910);
                             };
-                        }, key: __key3, sequenceNumber: -917386738);
-                    }, key: __key2, sequenceNumber: -917386737);
+                        }, key: __key3, sequenceNumber: 598861911);
+                    }, key: __key2, sequenceNumber: 598861912);
                     __frame2.Element("div", (ref UIElementAttribute __attribute) =>
                     {
                         __attribute.Set("class", "nav-item px-3");
@@ -103,13 +103,13 @@ namespace BlazorJs.Sample.Layout
                             __component3["href"] = "Breakout";
                             __component3.ChildContent = (__frame4, __key4) =>
                             {
-                                __frame4.Markup("<span class=\"bi bi-list-nested\" aria-hidden=\"true\"></span>", key: __key4, sequenceNumber: -917386736);
-                                __frame4.Text("Breakout\r\n            ", key: __key4, sequenceNumber: -917386735);
+                                __frame4.Markup("<span class=\"bi bi-list-nested\" aria-hidden=\"true\"></span>", key: __key4, sequenceNumber: 598861913);
+                                __frame4.Text("Breakout\r\n            ", key: __key4, sequenceNumber: 598861914);
                             };
-                        }, key: __key3, sequenceNumber: -917386734);
-                    }, key: __key2, sequenceNumber: -917386733);
-                }, key: __key1, sequenceNumber: -917386732);
-            }, sequenceNumber: -917386731);
+                        }, key: __key3, sequenceNumber: 598861915);
+                    }, key: __key2, sequenceNumber: 598861916);
+                }, key: __key1, sequenceNumber: 598861917);
+            }, sequenceNumber: 598861918);
         }
 
     }

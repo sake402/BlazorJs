@@ -22,11 +22,11 @@ namespace BlazorJs.Core.Components.LiteRouting
         {
             if (route != null)
             {
-                __frame0.Content(Found(), sequenceNumber: -1236913095);
+                __frame0.Content(Found(), sequenceNumber: -316143205);
             }
             else
             {
-                __frame0.Content(NotFound, sequenceNumber: -1236913094);
+                __frame0.Content(NotFound, sequenceNumber: -316143204);
             }
         }
 

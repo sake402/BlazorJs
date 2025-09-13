@@ -19,8 +19,8 @@ namespace Microsoft.AspNetCore.Components
                 __attribute.Set("style", "display:none");
             }, (__frame1, __key1) =>
             {
-                __frame1.Content(ChildContent, key: __key1, sequenceNumber: 358505106);
-            }, sequenceNumber: 358505107);
+                __frame1.Content(ChildContent, key: __key1, sequenceNumber: -987110344);
+            }, sequenceNumber: -987110343);
         }
 
     }

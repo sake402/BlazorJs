@@ -14,6 +14,36 @@ namespace BlazorJs.Core
 
 namespace BlazorJs.Core
 {
+    [Name("bc_bjr")]
+    public partial class BrowserJavascriptRuntime
+    {
+    
+    }
+}
+
+
+namespace BlazorJs.Core
+{
+    [Name("bc_bnd")]
+    internal partial class BrowserNativeDispatcher
+    {
+    
+    }
+}
+
+
+namespace BlazorJs.Core
+{
+    [Name("bc_bnebl")]
+    public partial class BrowserNativeErrorBoundaryLogger
+    {
+    
+    }
+}
+
+
+namespace BlazorJs.Core
+{
     [Name("bc_bnnm")]
     internal partial class BrowserNativeNavigationManager
     {
@@ -44,28 +74,8 @@ namespace BlazorJs.Core
 
 namespace BlazorJs.Core
 {
-    [Name("bc_rh")]
-    public partial interface RenderHandle
-    {
-    
-    }
-}
-
-
-namespace BlazorJs.Core
-{
     [Name("bc_i")]
     internal partial interface IRenderer
-    {
-    
-    }
-}
-
-
-namespace BlazorJs.Core
-{
-    [Name("bc_re")]
-    public static partial class RendererExtension
     {
     
     }
@@ -475,9 +485,9 @@ namespace Microsoft.AspNetCore.Components
 }
 
 
-namespace Microsoft.AspNetCore.Components.Rendering
+namespace Microsoft.AspNetCore.Components
 {
-    [Name("macr_d")]
+    [Name("mac_d")]
     public abstract partial class Dispatcher
     {
     
@@ -509,6 +519,26 @@ namespace Microsoft.AspNetCore.Components
 {
     [Name("mac_era")]
     public partial class EditorRequiredAttribute
+    {
+    
+    }
+}
+
+
+namespace Microsoft.AspNetCore.Components
+{
+    [Name("mac_er")]
+    public partial struct ElementReference
+    {
+    
+    }
+}
+
+
+namespace Microsoft.AspNetCore.Components
+{
+    [Name("mac_ebb")]
+    public abstract partial class ErrorBoundaryBase
     {
     
     }
@@ -567,6 +597,16 @@ namespace Microsoft.AspNetCore.Components
 
 namespace Microsoft.AspNetCore.Components
 {
+    [Name("mac_ecwi")]
+    public readonly partial struct EventCallbackWorkItem
+    {
+    
+    }
+}
+
+
+namespace Microsoft.AspNetCore.Components
+{
     [Name("mac_i")]
     public partial interface IComponent
     {
@@ -587,6 +627,46 @@ namespace Microsoft.AspNetCore.Components
 
 namespace Microsoft.AspNetCore.Components
 {
+    [Name("mac_irm")]
+    public partial interface IComponentRenderMode
+    {
+    
+    }
+}
+
+
+namespace Microsoft.AspNetCore.Components
+{
+    [Name("mac_ib")]
+    internal partial interface IErrorBoundary
+    {
+    
+    }
+}
+
+
+namespace Microsoft.AspNetCore.Components
+{
+    [Name("mac_iar")]
+    public partial interface IHandleAfterRender
+    {
+    
+    }
+}
+
+
+namespace Microsoft.AspNetCore.Components
+{
+    [Name("mac_ie")]
+    public partial interface IHandleEvent
+    {
+    
+    }
+}
+
+
+namespace Microsoft.AspNetCore.Components
+{
     [Name("mac_ic$2")]
     public partial interface ILayoutComponent
     {
@@ -597,7 +677,7 @@ namespace Microsoft.AspNetCore.Components
 
 namespace Microsoft.AspNetCore.Components
 {
-    [Name("mac_ia$2")]
+    [Name("mac_ia$3")]
     public partial class InjectAttribute
     {
     
@@ -657,6 +737,16 @@ namespace Microsoft.AspNetCore.Components
 
 namespace Microsoft.AspNetCore.Components
 {
+    [Name("mac_ne")]
+    public partial class NavigationException
+    {
+    
+    }
+}
+
+
+namespace Microsoft.AspNetCore.Components
+{
     [Name("mac_nm")]
     public abstract partial class NavigationManager
     {
@@ -701,6 +791,45 @@ namespace Microsoft.AspNetCore.Components
 
 namespace Microsoft.AspNetCore.Components
 {
+    [Name("mac_pv")]
+    public readonly partial struct ParameterView
+    {
+            [Name("mac_pv_pvv")]
+        public partial struct ParameterViewValue
+        {
+        
+        }
+        [Name("mac_pv_pve")]
+        public partial struct ParameterViewEnumerator
+        {
+        
+        }
+    }
+}
+
+
+namespace Microsoft.AspNetCore.Components
+{
+    [Name("mac_ri")]
+    public sealed partial class RendererInfo
+    {
+    
+    }
+}
+
+
+namespace Microsoft.AspNetCore.Components
+{
+    [Name("mac_rh")]
+    public readonly partial struct RenderHandle
+    {
+    
+    }
+}
+
+
+namespace Microsoft.AspNetCore.Components
+{
     [Name("mac_rmsa")]
     public partial class RenderModeServerAttribute
     {
@@ -732,6 +861,36 @@ namespace Microsoft.AspNetCore.Components.Rendering
 namespace Microsoft.AspNetCore.Components
 {
     [Name("mac_ra")]
+    public sealed partial class ResourceAsset
+    {
+    
+    }
+}
+
+
+namespace Microsoft.AspNetCore.Components
+{
+    [Name("mac_rac")]
+    public partial class ResourceAssetCollection
+    {
+    
+    }
+}
+
+
+namespace Microsoft.AspNetCore.Components
+{
+    [Name("mac_rap")]
+    public sealed partial class ResourceAssetProperty
+    {
+    
+    }
+}
+
+
+namespace Microsoft.AspNetCore.Components
+{
+    [Name("mac_ra$4")]
     public sealed partial class RouteAttribute
     {
     
@@ -1175,6 +1334,26 @@ namespace Microsoft.AspNetCore.Components
 }
 
 
+namespace Microsoft.AspNetCore.Components.Web
+{
+    [Name("macw_eb")]
+    public partial class ErrorBoundary
+    {
+    
+    }
+}
+
+
+namespace Microsoft.AspNetCore.Components.Web
+{
+    [Name("macw_ibl")]
+    public partial interface IErrorBoundaryLogger
+    {
+    
+    }
+}
+
+
 namespace Microsoft.AspNetCore.Components.Forms
 {
     [Name("macf_art")]
@@ -1487,6 +1666,16 @@ namespace Microsoft.Extensions.Configuration
 
 namespace Microsoft.Extensions.Configuration
 {
+    [Name("mec_ib")]
+    public partial interface IConfigurationBuilder
+    {
+    
+    }
+}
+
+
+namespace Microsoft.Extensions.Configuration
+{
     [Name("mec_is")]
     public partial interface IConfigurationSection
     {
@@ -1509,6 +1698,176 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     [Name("med_scse")]
     public static partial class ServiceCollectionServiceExtensions
+    {
+    
+    }
+}
+
+
+namespace Microsoft.JSInterop
+{
+    [Name("mj_dnor")]
+    public static partial class DotNetObjectReference
+    {
+    
+    }
+}
+
+
+namespace Microsoft.JSInterop
+{
+    [Name("mj_dnsr")]
+    public sealed partial class DotNetStreamReference
+    {
+    
+    }
+}
+
+
+namespace Microsoft.JSInterop
+{
+    [Name("mj_iipor")]
+    public partial interface IJSInProcessObjectReference
+    {
+    
+    }
+}
+
+
+namespace Microsoft.JSInterop
+{
+    [Name("mj_iipr")]
+    public partial interface IJSInProcessRuntime
+    {
+    
+    }
+}
+
+
+namespace Microsoft.JSInterop
+{
+    [Name("mj_ior")]
+    public partial interface IJSObjectReference
+    {
+    
+    }
+}
+
+
+namespace Microsoft.JSInterop
+{
+    [Name("mj_ir")]
+    public partial interface IJSRuntime
+    {
+    
+    }
+}
+
+
+namespace Microsoft.JSInterop
+{
+    [Name("mj_isr")]
+    public partial interface IJSStreamReference
+    {
+    
+    }
+}
+
+
+namespace Microsoft.JSInterop
+{
+    [Name("mj_jcrth")]
+    internal static partial class JSCallResultTypeHelper
+    {
+    
+    }
+}
+
+
+namespace Microsoft.JSInterop
+{
+    [Name("mj_jde")]
+    public sealed partial class JSDisconnectedException
+    {
+    
+    }
+}
+
+
+namespace Microsoft.JSInterop
+{
+    [Name("mj_je")]
+    public partial class JSException
+    {
+    
+    }
+}
+
+
+namespace Microsoft.JSInterop
+{
+    [Name("mj_jipore")]
+    public static partial class JSInProcessObjectReferenceExtensions
+    {
+    
+    }
+}
+
+
+namespace Microsoft.JSInterop
+{
+    [Name("mj_jipr")]
+    public abstract partial class JSInProcessRuntime
+    {
+    
+    }
+}
+
+
+namespace Microsoft.JSInterop
+{
+    [Name("mj_jipre")]
+    public static partial class JSInProcessRuntimeExtensions
+    {
+    
+    }
+}
+
+
+namespace Microsoft.JSInterop
+{
+    [Name("mj_jia")]
+    public sealed partial class JSInvokableAttribute
+    {
+    
+    }
+}
+
+
+namespace Microsoft.JSInterop
+{
+    [Name("mj_jore")]
+    public static partial class JSObjectReferenceExtensions
+    {
+    
+    }
+}
+
+
+namespace Microsoft.JSInterop
+{
+    [Name("mj_jr")]
+    public abstract partial class JSRuntime
+    {
+    
+    }
+}
+
+
+namespace Microsoft.JSInterop
+{
+    [Name("mj_jre")]
+    public static partial class JSRuntimeExtensions
     {
     
     }
@@ -1627,6 +1986,36 @@ namespace System
 
 namespace System
 {
+    [Name("s_ie$1")]
+    public partial interface IAsyncEnumerable<T>
+    {
+    
+    }
+}
+
+
+namespace System
+{
+    [Name("s_ie$1$2")]
+    public partial interface IAsyncEnumerator<T>
+    {
+    
+    }
+}
+
+
+namespace System
+{
+    [Name("s_id")]
+    public partial interface IAsyncDisposable
+    {
+    
+    }
+}
+
+
+namespace System
+{
     [Name("s_i")]
     public readonly partial struct Index
     {
@@ -1641,6 +2030,30 @@ namespace System
     public partial interface IProgress<T>
     {
     
+    }
+}
+
+
+namespace System
+{
+    [Name("s_is")]
+    public partial interface IServiceScope
+    {
+    
+    }
+}
+
+
+namespace System
+{
+    [Name("s_spe")]
+    public static partial class ServiceProviderExtensions
+    {
+            [Name("s_spe_ss")]
+         partial class ServiceScope
+        {
+        
+        }
     }
 }
 
@@ -1691,7 +2104,7 @@ namespace System
 
 namespace System
 {
-    [Name("s_spe")]
+    [Name("s_spe$3")]
     public static partial class ServiceProviderExtension
     {
     
@@ -1803,6 +2216,16 @@ namespace System.Collections.Specialized
 {
     [Name("scs_nvc")]
     public partial class NameValueCollection
+    {
+    
+    }
+}
+
+
+namespace System.ComponentModel
+{
+    [Name("sc_td")]
+    public partial class TypeDescriptor
     {
     
     }
@@ -2217,6 +2640,16 @@ namespace System.ComponentModel.DataAnnotations
 
 namespace System.Diagnostics.CodeAnalysis
 {
+    [Name("sdc_dna")]
+    public sealed partial class DisallowNullAttribute
+    {
+    
+    }
+}
+
+
+namespace System.Diagnostics.CodeAnalysis
+{
     [Name("sdc_mnwa")]
     public sealed partial class MaybeNullWhenAttribute
     {
@@ -2279,6 +2712,16 @@ namespace System.IO
 {
     [Name("si_se")]
     public static partial class StreamExtensions
+    {
+    
+    }
+}
+
+
+namespace System.IO
+{
+    [Name("si_tre")]
+    public static partial class TextReaderExtension
     {
     
     }
@@ -2597,6 +3040,16 @@ namespace System.Net.Http.Json
 }
 
 
+namespace System.Numerics
+{
+    [Name("sn_i$1")]
+    public partial interface IParsable<T>
+    {
+    
+    }
+}
+
+
 namespace System.Reflection
 {
     [Name("sr_ae")]
@@ -2607,6 +3060,26 @@ namespace System.Reflection
         {
         
         }
+    }
+}
+
+
+namespace System.Reflection
+{
+    [Name("sr_ae$3")]
+    public static partial class AttributeExtension
+    {
+    
+    }
+}
+
+
+namespace System.Runtime.CompilerServices
+{
+    [Name("src_cwt$2")]
+    public partial class ConditionalWeakTable<TKey, TValue>
+    {
+    
     }
 }
 
@@ -2923,6 +3396,16 @@ namespace System.Threading.Tasks
 
 namespace System.Threading.Tasks
 {
+    [Name("stt_te")]
+    public static partial class TaskExtensions
+    {
+    
+    }
+}
+
+
+namespace System.Threading.Tasks
+{
     [Name("stt_ttar")]
     public static partial class TaskToAsyncResult
     {
@@ -2938,7 +3421,7 @@ namespace System.Threading.Tasks
 namespace System.Threading.Tasks
 {
     [Name("stt_vt")]
-    public partial struct ValueTask
+    public partial class ValueTask
     {
     
     }
@@ -2959,6 +3442,46 @@ namespace BlazorJs.Core.Components.LiteRouting
 {
     [Name("bccl_lr")]
     public partial class LiteRouter
+    {
+    
+    }
+}
+
+
+namespace Microsoft.AspNetCore.Components.RenderTree
+{
+    [Name("macr_r$8")]
+    public abstract partial class Renderer
+    {
+    
+    }
+}
+
+
+namespace Microsoft.AspNetCore.Components.Sections
+{
+    [Name("macs_sc")]
+    public sealed partial class SectionContent
+    {
+    
+    }
+}
+
+
+namespace Microsoft.AspNetCore.Components.Sections
+{
+    [Name("macs_so")]
+    public sealed partial class SectionOutlet
+    {
+    
+    }
+}
+
+
+namespace Microsoft.AspNetCore.Components.Sections
+{
+    [Name("macs_sr")]
+    internal sealed partial class SectionRegistry
     {
     
     }
@@ -3095,6 +3618,139 @@ namespace Microsoft.AspNetCore.Components.Forms.Mapping
     public partial interface IFormValueMapper
     {
     
+    }
+}
+
+
+namespace Microsoft.JSInterop.Implementation
+{
+    [Name("mji_jipor")]
+    public partial class JSInProcessObjectReference
+    {
+    
+    }
+}
+
+
+namespace Microsoft.JSInterop.Implementation
+{
+    [Name("mji_jor")]
+    public partial class JSObjectReference
+    {
+    
+    }
+}
+
+
+namespace Microsoft.JSInterop.Implementation
+{
+    [Name("mji_jsr")]
+    public sealed partial class JSStreamReference
+    {
+    
+    }
+}
+
+
+namespace Microsoft.JSInterop.Infrastructure
+{
+    [Name("mji_dnd")]
+    public static partial class DotNetDispatcher
+    {
+            [Name("mji_dnd_muh")]
+        internal static partial class MetadataUpdateHandler
+        {
+        
+        }
+        [Name("mji_dnd_ak")]
+        private readonly partial struct AssemblyKey
+        {
+        
+        }
+    }
+}
+
+
+namespace Microsoft.JSInterop.Infrastructure
+{
+    [Name("mji_dnii")]
+    public readonly partial struct DotNetInvocationInfo
+    {
+    
+    }
+}
+
+
+namespace Microsoft.JSInterop.Infrastructure
+{
+    [Name("mji_dnir")]
+    public readonly partial struct DotNetInvocationResult
+    {
+    
+    }
+}
+
+
+namespace Microsoft.JSInterop.Infrastructure
+{
+    [Name("mji_inor")]
+    internal partial interface IDotNetObjectReference
+    {
+    
+    }
+}
+
+
+namespace Microsoft.JSInterop.Infrastructure
+{
+    [Name("mji_ivr")]
+    public partial interface IJSVoidResult
+    {
+    
+    }
+}
+
+
+namespace Microsoft.JSInterop.Infrastructure
+{
+    [Name("mji_jii")]
+    public partial struct JSInvocationInfo
+    {
+    
+    }
+}
+
+
+namespace Microsoft.JSInterop.Infrastructure
+{
+    [Name("mji_tgu")]
+    internal static partial class TaskGenericsUtil
+    {
+            [Name("mji_tgu_irs")]
+         partial interface ITcsResultSetter
+        {
+        
+        }
+        [Name("mji_tgu_irg")]
+        private partial interface ITaskResultGetter
+        {
+        
+        }
+        [Name("mji_tgu_trg$1")]
+        private sealed partial class TaskResultGetter<T>
+        {
+        
+        }
+        [Name("mji_tgu_vtrg")]
+        private sealed partial class VoidTaskResultGetter
+        {
+        
+        }
+        [Name("mji_tgu_trs$1")]
+        private sealed partial class TcsResultSetter<T>
+        {
+        
+        }
     }
 }
 

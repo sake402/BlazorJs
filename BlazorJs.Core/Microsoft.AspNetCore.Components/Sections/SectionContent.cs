@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Microsoft.AspNetCore.Components.Sections
 {
-    public sealed class SectionContent : ComponentBase, IComponent, IDisposable
+    public sealed partial class SectionContent : ComponentBase, IComponent, IDisposable
     {
         private object _registeredIdentifier;
         private bool? _registeredIsDefaultContent;

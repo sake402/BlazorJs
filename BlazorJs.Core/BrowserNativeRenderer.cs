@@ -41,7 +41,7 @@ namespace BlazorJs.Core
         {
             fragment(rootFragment);
         }
-
+        
         public void Add<T>(Action<T> attributeBuilder = null) where T : IComponent
         {
             rootFragment.Component<T>(attributeBuilder, sequenceNumber: int.MaxValue);
@@ -361,7 +361,7 @@ namespace BlazorJs.Core
         {
             registries.Remove(frameId);
         }
-
+        
         internal UIFrameState GetState(int frameId)
         {
             if (registries.TryGetValue(frameId, out var state))
@@ -371,7 +371,7 @@ namespace BlazorJs.Core
             }
             return null;
         }
-
+        
         internal UIFrameState GetRequiredState(int frameId)
         {
             return GetState(frameId) ?? throw new InvalidOperationException($"Component with id {frameId} not found");

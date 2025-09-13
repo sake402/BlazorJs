@@ -24,7 +24,7 @@ namespace Microsoft.AspNetCore.Components.Authorization
             {
                 __component0.Value = _currentAuthenticationStateTask;
                 __component0.ChildContent = ChildContent;
-            }, sequenceNumber: 275558473);
+            }, sequenceNumber: -617868881);
         }
 
     }

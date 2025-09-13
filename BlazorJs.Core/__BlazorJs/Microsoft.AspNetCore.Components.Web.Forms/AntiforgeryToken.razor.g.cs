@@ -25,7 +25,7 @@ namespace Microsoft.AspNetCore.Components.Forms
                     __attribute.Set("type", "hidden");
                     __attribute.Set("name", _requestToken.FormFieldName);
                     __attribute.Set("value", _requestToken.Value);
-                }, null, sequenceNumber: -2103457863);
+                }, null, sequenceNumber: -826633741);
             }
         }
 

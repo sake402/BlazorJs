@@ -7,7 +7,7 @@ namespace Microsoft.AspNetCore.Components
     /// <summary>
     /// A base class for error boundary components.
     /// </summary>
-    public abstract class ErrorBoundaryBase : ComponentBase, IErrorBoundary
+    public abstract partial class ErrorBoundaryBase : ComponentBase, IErrorBoundary
     {
         private int _errorCount;
 

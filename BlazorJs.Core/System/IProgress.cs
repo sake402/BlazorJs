@@ -1,4 +1,6 @@
-﻿namespace System
+﻿using System.Threading.Tasks;
+
+namespace System
 {
     public interface IProgress<in T>
     {
@@ -11,4 +13,5 @@
         //     The value of the updated progress.
         void Report(T value);
     }
+
 }

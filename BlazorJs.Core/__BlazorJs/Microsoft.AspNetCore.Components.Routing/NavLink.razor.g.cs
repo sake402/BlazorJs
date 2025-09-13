@@ -27,8 +27,8 @@ namespace Microsoft.AspNetCore.Components.Routing
                 __attribute.Set("aria-current", (_isActive?"page":null));
             }, (__frame1, __key1) =>
             {
-                __frame1.Content(ChildContent, key: __key1, sequenceNumber: 337529127);
-            }, sequenceNumber: 337529128);
+                __frame1.Content(ChildContent, key: __key1, sequenceNumber: -939697809);
+            }, sequenceNumber: -939697808);
         }
 
     }

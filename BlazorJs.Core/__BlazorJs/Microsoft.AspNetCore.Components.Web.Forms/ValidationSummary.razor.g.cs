@@ -41,10 +41,10 @@ namespace Microsoft.AspNetCore.Components.Forms
                             __attribute.Set("class", "validation-message");
                         }, (__frame2, __key2) =>
                         {
-                            __frame2.Content(error, key: __key2, sequenceNumber: -2049627595);
-                        }, key: error, sequenceNumber: -2049627594);
+                            __frame2.Content(error, key: __key2, sequenceNumber: 1161265520);
+                        }, key: error, sequenceNumber: 1161265521);
                     }
-                }, sequenceNumber: -2049627593);
+                }, sequenceNumber: 1161265522);
             }
         }
 

@@ -44,6 +44,16 @@ namespace BlazorJs.Sample
 namespace BlazorJs.Sample
 {
     [Name("bs_gc$2$2")]
+    public partial class GenericComponent1Up<T1, T2>
+    {
+    
+    }
+}
+
+
+namespace BlazorJs.Sample
+{
+    [Name("bs_gc$2$3")]
     public partial class GenericComponent2<T1, T2>
     {
     
